@@ -1,0 +1,50 @@
+﻿@model IEnumerable<EnterpriseEmployeeManagement.Models.Department>
+
+@{
+    ViewData["Title"] = "Departments";
+}
+
+<div class="container mt-4">
+
+    <div class="d-flex justify-content-between mb-3">
+        <h2>Departments</h2>
+
+        <a asp-action="Create" class="btn btn-primary">
+            Add Department
+        </a>
+    </div>
+
+    <table class="table table-bordered table-striped">
+
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Description</th>
+                <th width="180">Actions</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.Name</td>
+                    <td>@item.Description</td>
+
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@item.Id"
+                           class="btn btn-sm btn-warning">Edit</a>
+
+                        <a asp-action="Delete" asp-route-id="@item.Id"
+                           class="btn btn-sm btn-danger"
+                           onclick="return confirm('Delete this department?')">
+                            Delete
+                        </a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+
+    </table>
+
+</div>
