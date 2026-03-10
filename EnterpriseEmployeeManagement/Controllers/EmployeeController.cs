@@ -1,5 +1,6 @@
 ﻿using EnterpriseEmployeeManagement.Data;
 using EnterpriseEmployeeManagement.Models;
+using EnterpriseEmployeeManagement.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -40,34 +41,56 @@ namespace EnterpriseEmployeeManagement.Controllers
         // Create Employee
         public IActionResult Create()
         {
-            ViewBag.Departments = new SelectList(
-                _context.Departments,
-                "Id",
-                "Name");
+            var vm = new EmployeeFormViewModel
+            {
+                HireDate = DateTime.Today,
+                IsActive = true,
+                Departments = _context.Departments
+                 .Select(d => new SelectListItem
+                 {
+                     Value = d.Id.ToString(),
+                     Text = d.Name
+                 }).ToList()
+            };
 
-            return View();
+            return View(vm);
         }
+
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(Employee employee)
+        public async Task<IActionResult> Create(EmployeeFormViewModel vm)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                _context.Employees.Add(employee);
-                await _context.SaveChangesAsync();
+                vm.Departments = _context.Departments
+                    .Select(d => new SelectListItem
+                    {
+                        Value = d.Id.ToString(),
+                        Text = d.Name
+                    }).ToList();
 
-                return RedirectToAction(nameof(Index));
+                return View(vm);
             }
 
-            ViewBag.Departments = new SelectList(
-                _context.Departments,
-                "Id",
-                "Name");
+            var employee = new Employee
+            {
+                FirstName = vm.FirstName,
+                LastName = vm.LastName,
+                Email = vm.Email,
+                DepartmentId = vm.DepartmentId,
+                Position = vm.Position,
+                HireDate = vm.HireDate,
+                IsActive = vm.IsActive
+            };
 
-            return View(employee);
+            _context.Employees.Add(employee);
+
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction(nameof(Index));
         }
 
-        // Edit
+
         public async Task<IActionResult> Edit(int id)
         {
             var employee = await _context.Employees.FindAsync(id);
@@ -75,35 +98,59 @@ namespace EnterpriseEmployeeManagement.Controllers
             if (employee == null)
                 return NotFound();
 
-            ViewBag.Departments = new SelectList(
-                _context.Departments,
-                "Id",
-                "Name",
-                employee.DepartmentId);
+            var vm = new EmployeeFormViewModel
+            {
+                Id = employee.Id,
+                FirstName = employee.FirstName,
+                LastName = employee.LastName,
+                Email = employee.Email,
+                DepartmentId = employee.DepartmentId,
+                Position = employee.Position,
+                HireDate = employee.HireDate,
+                IsActive = employee.IsActive,
+                Departments = _context.Departments
+                    .Select(d => new SelectListItem
+                    {
+                        Value = d.Id.ToString(),
+                        Text = d.Name
+                    }).ToList()
+            };
 
-            return View(employee);
+            return View(vm);
         }
+
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, Employee employee)
+        public async Task<IActionResult> Edit(EmployeeFormViewModel vm)
         {
-            if (id != employee.Id)
-                return NotFound();
-
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                _context.Update(employee);
-                await _context.SaveChangesAsync();
+                vm.Departments = _context.Departments
+                    .Select(d => new SelectListItem
+                    {
+                        Value = d.Id.ToString(),
+                        Text = d.Name
+                    }).ToList();
 
-                return RedirectToAction(nameof(Index));
+                return View(vm);
             }
 
-            ViewBag.Departments = new SelectList(
-                _context.Departments,
-                "Id",
-                "Name");
+            var employee = await _context.Employees.FindAsync(vm.Id);
 
-            return View(employee);
+            if (employee == null)
+                return NotFound();
+
+            employee.FirstName = vm.FirstName;
+            employee.LastName = vm.LastName;
+            employee.Email = vm.Email;
+            employee.DepartmentId = vm.DepartmentId;
+            employee.Position = vm.Position;
+            employee.HireDate = vm.HireDate;
+            employee.IsActive = vm.IsActive;
+
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction(nameof(Index));
         }
 
         // Soft Delete
