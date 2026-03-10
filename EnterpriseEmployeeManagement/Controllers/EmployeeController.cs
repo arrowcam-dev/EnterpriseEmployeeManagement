@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using EnterpriseEmployeeManagement.Data;
 using EnterpriseEmployeeManagement.Models;
 using EnterpriseEmployeeManagement.ViewModels;
@@ -18,14 +19,40 @@ namespace EnterpriseEmployeeManagement.Controllers
             _mapper = mapper;
         }
 
-        // Employee List
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string search, int page = 1)
         {
-            var employees = await _context.Employees
+            int pageSize = 10;
+
+            var query = _context.Employees
                 .Include(e => e.Department)
+                .AsQueryable();
+
+            if (!string.IsNullOrEmpty(search))
+            {
+                query = query.Where(e =>
+                    e.FirstName.Contains(search) ||
+                    e.LastName.Contains(search) ||
+                    e.Email.Contains(search));
+            }
+
+            var totalCount = await query.CountAsync();
+
+            var employees = await query
+                .OrderBy(e => e.FirstName)
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ProjectTo<EmployeeListViewModel>(_mapper.ConfigurationProvider)
                 .ToListAsync();
 
-            return View(employees);
+            var result = new PagedResult<EmployeeListViewModel>
+            {
+                Items = employees,
+                TotalCount = totalCount,
+                PageNumber = page,
+                PageSize = pageSize
+            };
+
+            return View(result);
         }
 
         // Deleted Employees (Admin)
