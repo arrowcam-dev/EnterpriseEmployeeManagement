@@ -1,4 +1,5 @@
 ﻿using EnterpriseEmployeeManagement.Models;
+using EnterpriseEmployeeManagement.Models.Common;
 using EnterpriseEmployeeManagement.Services;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
@@ -33,27 +34,17 @@ namespace EnterpriseEmployeeManagement.Data
                      CreatedDate = new DateTime(2025, 1, 1)
                  }
              );
-
-            modelBuilder.Entity<Employee>()
-                .HasQueryFilter(e => e.CompanyId == _tenantProvider.GetCompanyId());
-
-            modelBuilder.Entity<Department>()
-                .HasQueryFilter(d => d.CompanyId == _tenantProvider.GetCompanyId());
         }
 
         public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
         {
             var companyId = _tenantProvider.GetCompanyId();
 
-            foreach (var entry in ChangeTracker.Entries())
+            foreach (var entry in ChangeTracker.Entries<ITenantEntity>())
             {
                 if (entry.State == EntityState.Added)
                 {
-                    if (entry.Entity is Department dept)
-                        dept.CompanyId = companyId;
-
-                    if (entry.Entity is Employee emp)
-                        emp.CompanyId = companyId;
+                    entry.Entity.CompanyId = companyId;
                 }
             }
 

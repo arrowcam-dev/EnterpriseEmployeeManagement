@@ -1,6 +1,8 @@
-﻿namespace EnterpriseEmployeeManagement.Models
+﻿using EnterpriseEmployeeManagement.Models.Common;
+
+namespace EnterpriseEmployeeManagement.Models
 {
-    public class Employee
+    public class Employee : ITenantEntity
     {
         public int Id { get; set; }
 
