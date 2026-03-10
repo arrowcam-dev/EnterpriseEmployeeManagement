@@ -1,0 +1,41 @@
+﻿@model IEnumerable<EnterpriseEmployeeManagement.Models.Employee>
+
+<div class="container mt-4">
+
+    <h2>Deleted Employees</h2>
+
+    <table class="table table-bordered">
+
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Department</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+
+        <tbody>
+
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.FirstName @item.LastName</td>
+                    <td>@item.Email</td>
+                    <td>@item.Department?.Name</td>
+
+                    <td>
+                        <a asp-action="Restore" asp-route-id="@item.Id" class="btn btn-success btn-sm">
+                            Restore
+                        </a>
+                    </td>
+                </tr>
+            }
+
+        </tbody>
+
+    </table>
+
+    <a asp-action="Index" class="btn btn-secondary">Back</a>
+
+</div>
