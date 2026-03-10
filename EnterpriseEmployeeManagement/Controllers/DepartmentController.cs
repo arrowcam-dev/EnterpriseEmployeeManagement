@@ -35,7 +35,6 @@ namespace EnterpriseEmployeeManagement.Controllers
         {
             if (ModelState.IsValid)
             {
-                department.CompanyId = 1; // For simplicity, assigning to a default company. In a real app, this would come from the user's context or selection.
                 _context.Add(department);
                 await _context.SaveChangesAsync();
 
