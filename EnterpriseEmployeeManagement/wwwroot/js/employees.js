@@ -17,7 +17,7 @@ function sortTable(column) {
 
 
 function loadEmployees(page = 1) {
-    showLoader();
+    showTableLoader();
 
     const search = document.getElementById("searchBox").value;
     const pageSize = document.getElementById("pageSize").value;
@@ -30,7 +30,7 @@ function loadEmployees(page = 1) {
             updateSortIcons();
         })
         .finally(() => {
-            hideLoader();
+            hideTableLoader();
         });
 }
 
@@ -201,4 +201,23 @@ function enableFormValidation(form) {
     $.validator.unobtrusive.parse(form);
 }
 
+function showTableLoader() {
+    document
+        .getElementById("employeeTableLoader")
+        .classList.remove("d-none");
+
+    document
+        .getElementById("employeeTable")
+        .classList.add("table-loading");
+}
+
+function hideTableLoader() {
+    document
+        .getElementById("employeeTableLoader")
+        .classList.add("d-none");
+
+    document
+        .getElementById("employeeTable")
+        .classList.remove("table-loading");
+}
 
