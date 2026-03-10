@@ -246,5 +246,73 @@ namespace EnterpriseEmployeeManagement.Controllers
             return PartialView("_EmployeeTable", model);
         }
 
+        public IActionResult CreateModal()
+        {
+            var vm = new EmployeeFormViewModel
+            {
+                HireDate = DateTime.Today,
+                IsActive = true,
+                Departments = _context.Departments
+                    .Select(d => new SelectListItem
+                    {
+                        Value = d.Id.ToString(),
+                        Text = d.Name
+                    }).ToList()
+            };
+
+            return PartialView("Partials/_CreateEmployeeForm", vm);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> CreateModal(EmployeeFormViewModel vm)
+        {
+            if (!ModelState.IsValid) return BadRequest();
+
+            var employee = _mapper.Map<Employee>(vm);
+
+            _context.Employees.Add(employee);
+
+            await _context.SaveChangesAsync();
+
+            return Ok();
+        }
+
+        public async Task<IActionResult> EditModal(int id)
+        {
+            var employee = await _context.Employees
+                .IgnoreQueryFilters()
+                .FirstOrDefaultAsync(x => x.Id == id);
+
+            if (employee == null)
+                return NotFound();
+
+            var vm = _mapper.Map<EmployeeFormViewModel>(employee);
+
+            vm.Departments = _context.Departments
+                .Select(d => new SelectListItem
+                {
+                    Value = d.Id.ToString(),
+                    Text = d.Name
+                }).ToList();
+
+            return PartialView("Partials/_EditEmployeeForm", vm);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> EditModal(EmployeeFormViewModel vm)
+        {
+            if (!ModelState.IsValid) return BadRequest();
+
+            var employee = await _context.Employees.FindAsync(vm.Id);
+
+            if (employee == null) return NotFound();
+
+            _mapper.Map(vm, employee);
+
+            await _context.SaveChangesAsync();
+
+            return Ok();
+        }
+
     }
 }

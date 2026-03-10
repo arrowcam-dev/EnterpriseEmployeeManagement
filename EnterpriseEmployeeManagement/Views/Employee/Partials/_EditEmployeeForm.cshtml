@@ -1,0 +1,72 @@
+﻿@using EnterpriseEmployeeManagement.ViewModels
+@model EmployeeFormViewModel
+
+<form id="editEmployeeForm">
+
+    <input type="hidden" asp-for="Id" />
+
+    <div class="mb-3">
+
+        <label class="form-label">First Name</label>
+
+        <input asp-for="FirstName" class="form-control" />
+
+    </div>
+
+    <div class="mb-3">
+
+        <label class="form-label">Last Name</label>
+
+        <input asp-for="LastName" class="form-control" />
+
+    </div>
+
+    <div class="mb-3">
+
+        <label class="form-label">Email</label>
+
+        <input asp-for="Email" class="form-control" />
+
+    </div>
+
+    <div class="mb-3">
+
+        <label class="form-label">Department</label>
+
+        <select asp-for="DepartmentId" asp-items="Model.Departments" class="form-select"></select>
+
+    </div>
+
+    <div class="mb-3">
+
+        <label class="form-label">Position</label>
+
+        <input asp-for="Position" class="form-control" />
+
+    </div>
+
+    <div class="mb-3">
+
+        <label class="form-label">Hire Date</label>
+
+        <input asp-for="HireDate" type="date" class="form-control" />
+
+    </div>
+
+    <div class="form-check mb-3">
+
+        <input asp-for="IsActive" class="form-check-input" />
+
+        <label class="form-check-label">
+            Active
+        </label>
+
+    </div>
+
+    <button class="btn btn-primary">
+
+        Update
+
+    </button>
+
+</form>
