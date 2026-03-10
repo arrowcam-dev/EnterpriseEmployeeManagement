@@ -1,4 +1,5 @@
-﻿using EnterpriseEmployeeManagement.Data;
+﻿using AutoMapper;
+using EnterpriseEmployeeManagement.Data;
 using EnterpriseEmployeeManagement.Models;
 using EnterpriseEmployeeManagement.ViewModels;
 using Microsoft.AspNetCore.Mvc;
@@ -10,10 +11,11 @@ namespace EnterpriseEmployeeManagement.Controllers
     public class EmployeeController : Controller
     {
         private readonly ApplicationDbContext _context;
-
-        public EmployeeController(ApplicationDbContext context)
+        private readonly IMapper _mapper;
+        public EmployeeController(ApplicationDbContext context, IMapper mapper)
         {
             _context = context;
+            _mapper = mapper;
         }
 
         // Employee List
@@ -71,17 +73,8 @@ namespace EnterpriseEmployeeManagement.Controllers
 
                 return View(vm);
             }
-
-            var employee = new Employee
-            {
-                FirstName = vm.FirstName,
-                LastName = vm.LastName,
-                Email = vm.Email,
-                DepartmentId = vm.DepartmentId,
-                Position = vm.Position,
-                HireDate = vm.HireDate,
-                IsActive = vm.IsActive
-            };
+            
+            var employee = _mapper.Map<Employee>(vm);
 
             _context.Employees.Add(employee);
 
@@ -90,7 +83,7 @@ namespace EnterpriseEmployeeManagement.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-
+        [HttpGet]
         public async Task<IActionResult> Edit(int id)
         {
             var employee = await _context.Employees.FindAsync(id);
@@ -98,23 +91,14 @@ namespace EnterpriseEmployeeManagement.Controllers
             if (employee == null)
                 return NotFound();
 
-            var vm = new EmployeeFormViewModel
-            {
-                Id = employee.Id,
-                FirstName = employee.FirstName,
-                LastName = employee.LastName,
-                Email = employee.Email,
-                DepartmentId = employee.DepartmentId,
-                Position = employee.Position,
-                HireDate = employee.HireDate,
-                IsActive = employee.IsActive,
-                Departments = _context.Departments
+            var vm = _mapper.Map<EmployeeFormViewModel>(employee);
+
+            vm.Departments = _context.Departments
                     .Select(d => new SelectListItem
                     {
                         Value = d.Id.ToString(),
                         Text = d.Name
-                    }).ToList()
-            };
+                    }).ToList();
 
             return View(vm);
         }
@@ -140,13 +124,7 @@ namespace EnterpriseEmployeeManagement.Controllers
             if (employee == null)
                 return NotFound();
 
-            employee.FirstName = vm.FirstName;
-            employee.LastName = vm.LastName;
-            employee.Email = vm.Email;
-            employee.DepartmentId = vm.DepartmentId;
-            employee.Position = vm.Position;
-            employee.HireDate = vm.HireDate;
-            employee.IsActive = vm.IsActive;
+            _mapper.Map(vm, employee);
 
             await _context.SaveChangesAsync();
 

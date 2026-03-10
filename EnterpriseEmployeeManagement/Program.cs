@@ -1,4 +1,5 @@
 using EnterpriseEmployeeManagement.Data;
+using EnterpriseEmployeeManagement.Mappings;
 using EnterpriseEmployeeManagement.Services;
 using Microsoft.EntityFrameworkCore;
 
@@ -11,6 +12,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 builder.Services.AddScoped<ITenantProvider, TenantProvider>();
+builder.Services.AddAutoMapper(typeof(MappingProfile));
 
 var app = builder.Build();
 
