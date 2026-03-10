@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using EnterpriseEmployeeManagement.Data;
+using EnterpriseEmployeeManagement.Extensions;
 using EnterpriseEmployeeManagement.Models;
 using EnterpriseEmployeeManagement.ViewModels;
 using Microsoft.AspNetCore.Mvc;
@@ -19,41 +20,6 @@ namespace EnterpriseEmployeeManagement.Controllers
             _mapper = mapper;
         }
 
-        //public async Task<IActionResult> Index(string search, int page = 1)
-        //{
-        //    int pageSize = 10;
-
-        //    var query = _context.Employees
-        //        .Include(e => e.Department)
-        //        .AsQueryable();
-
-        //    if (!string.IsNullOrEmpty(search))
-        //    {
-        //        query = query.Where(e =>
-        //            e.FirstName.Contains(search) ||
-        //            e.LastName.Contains(search) ||
-        //            e.Email.Contains(search));
-        //    }
-
-        //    var totalCount = await query.CountAsync();
-
-        //    var employees = await query
-        //        .OrderBy(e => e.FirstName)
-        //        .Skip((page - 1) * pageSize)
-        //        .Take(pageSize)
-        //        .ProjectTo<EmployeeListViewModel>(_mapper.ConfigurationProvider)
-        //        .ToListAsync();
-
-        //    var result = new PagedResult<EmployeeListViewModel>
-        //    {
-        //        Items = employees,
-        //        TotalCount = totalCount,
-        //        PageNumber = page,
-        //        PageSize = pageSize
-        //    };
-
-        //    return View(result);
-        //}
         public IActionResult Index()
         {
             return View();
@@ -266,7 +232,10 @@ namespace EnterpriseEmployeeManagement.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateModal(EmployeeFormViewModel vm)
         {
-            if (!ModelState.IsValid) return BadRequest();
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState.ToErrorDictionary());
+            }
 
             var employee = _mapper.Map<Employee>(vm);
 
@@ -301,7 +270,10 @@ namespace EnterpriseEmployeeManagement.Controllers
         [HttpPost]
         public async Task<IActionResult> EditModal(EmployeeFormViewModel vm)
         {
-            if (!ModelState.IsValid) return BadRequest();
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState.ToErrorDictionary());
+            }
 
             var employee = await _context.Employees.FindAsync(vm.Id);
 

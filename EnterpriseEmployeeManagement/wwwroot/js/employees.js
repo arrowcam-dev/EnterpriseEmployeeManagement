@@ -70,7 +70,14 @@ function openCreateModal() {
     fetch('/Employee/CreateModal')
         .then(res => res.text())
         .then(html => {
-            document.getElementById('employeeModalBody').innerHTML = html;
+            const modalBody = document.getElementById('employeeModalBody');
+
+            modalBody.innerHTML = html;
+
+            // Re-enable validation
+            const form = modalBody.querySelector("form");
+
+            enableFormValidation(form);
 
             new bootstrap.Modal('#employeeModal').show();
         });
@@ -80,8 +87,14 @@ function openEditModal(id) {
     fetch(`/Employee/EditModal/${id}`)
         .then(res => res.text())
         .then(html => {
-            document.getElementById('employeeModalBody').innerHTML = html;
+            const modalBody = document.getElementById('employeeModalBody');
 
+            modalBody.innerHTML = html;
+
+            // Re-enable validation
+            const form = modalBody.querySelector("form");
+
+            enableFormValidation(form);
             new bootstrap.Modal('#employeeModal').show();
         });
 }
@@ -92,56 +105,82 @@ function confirmDelete(id) {
     new bootstrap.Modal('#deleteModal').show();
 }
 
-document.getElementById('confirmDeleteBtn')
-    .addEventListener('click', () => {
-        fetch(`/Employee/Delete/${deleteEmployeeId}`)
-            .then(() => {
-                loadEmployees();
+document.getElementById('confirmDeleteBtn').addEventListener('click', () => {
+    fetch(`/Employee/Delete/${deleteEmployeeId}`)
+        .then(() => {
+            loadEmployees();
 
-                bootstrap.Modal.getInstance(
-                    document.getElementById('deleteModal')
-                ).hide();
-            });
-    });
+            bootstrap.Modal.getInstance(
+                document.getElementById('deleteModal')
+            ).hide();
+        });
+});
 
 document.addEventListener("submit", function (e) {
-    if (e.target.id === "employeeForm") {
+    if (e.target.id === "employeeForm" ||
+        e.target.id === "editEmployeeForm") {
         e.preventDefault();
 
-        const formData = new FormData(e.target);
+        const form = e.target;
+        const formData = new FormData(form);
 
-        fetch('/Employee/CreateModal',
-            {
-                method: 'POST',
-                body: formData
-            })
-            .then(() => {
-                loadEmployees();
+        const url = form.id === "employeeForm"
+            ? "/Employee/CreateModal"
+            : "/Employee/EditModal";
 
-                bootstrap.Modal.getInstance(
-                    document.getElementById('employeeModal')
-                ).hide();
-            });
-    } else if (e.target.id === "editEmployeeForm") {
-        e.preventDefault();
+        fetch(url, {
+            method: "POST",
+            body: formData
+        })
+            .then(async response => {
+                //console.log(response);
 
-        const formData = new FormData(e.target);
-
-        fetch('/Employee/EditModal',
-            {
-                method: 'POST',
-                body: formData
-            })
-            .then(res => {
-                if (res.ok) {
+                if (response.ok) {
                     loadEmployees();
 
-                    bootstrap.Modal.getInstance(
-                        document.getElementById('employeeModal')
-                    ).hide();
+                    bootstrap.Modal
+                        .getInstance(document.getElementById('employeeModal'))
+                        .hide();
+
+                    showToast("Saved successfully");
                 }
+                else {
+                    //var errText = await response.text();
+                    //console.log(errText);
+
+                    const errors = await response.json();
+                    console.log(errors);
+
+                    displayValidationErrors(errors);
+                }
+            })
+            .catch(() => {
+                showToast("Unexpected server error", "danger");
             });
     }
 });
+
+function displayValidationErrors(errors) {
+    document
+        .querySelectorAll("[data-valmsg-for]")
+        .forEach(x => x.innerText = "");
+
+    for (const key in errors) {
+        const field = document.querySelector(
+            `[data-valmsg-for="${key}"]`
+        );
+
+        if (field) {
+            field.innerText = errors[key][0];
+        }
+    }
+}
+
+function enableFormValidation(form) {
+    $(form).removeData("validator");
+    $(form).removeData("unobtrusiveValidation");
+
+    $.validator.unobtrusive.parse(form);
+}
 
 

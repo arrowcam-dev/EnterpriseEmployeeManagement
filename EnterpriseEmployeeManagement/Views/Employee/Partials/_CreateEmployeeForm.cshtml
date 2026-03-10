@@ -2,63 +2,49 @@
 @model EmployeeFormViewModel
 
 <form id="employeeForm">
+    <div class="alert alert-danger d-none" id="formError"></div>
 
     <div class="mb-3">
-
-        <label class="form-label">First Name</label>
-
+        <label asp-for="FirstName" class="form-label">First Name</label>
         <input asp-for="FirstName" class="form-control" />
-
+        <span asp-validation-for="FirstName" class="text-danger"></span>
     </div>
 
     <div class="mb-3">
-
-        <label class="form-label">Last Name</label>
-
+        <label asp-for="LastName" class="form-label">Last Name</label>
         <input asp-for="LastName" class="form-control" />
-
+        <span asp-validation-for="LastName" class="text-danger"></span>
     </div>
 
     <div class="mb-3">
-
-        <label class="form-label">Email</label>
-
+        <label asp-for="Email" class="form-label">Email</label>
         <input asp-for="Email" class="form-control" />
-
+        <span asp-validation-for="Email" class="text-danger"></span>
     </div>
 
     <div class="mb-3">
-
-        <label class="form-label">Department</label>
-
+        <label asp-for="DepartmentId" class="form-label">Department</label>
         <select asp-for="DepartmentId" asp-items="Model.Departments" class="form-select"></select>
-
+        <span asp-validation-for="DepartmentId" class="text-danger"></span>
     </div>
 
     <div class="mb-3">
-
-        <label class="form-label">Position</label>
-
+        <label asp-for="Position" class="form-label">Position</label>
         <input asp-for="Position" class="form-control" />
-
+        <span asp-validation-for="Position" class="text-danger"></span>
     </div>
 
     <div class="mb-3">
-
-        <label class="form-label">Hire Date</label>
-
+        <label asp-for="HireDate" class="form-label">Hire Date</label>
         <input asp-for="HireDate" type="date" class="form-control" />
-
+        <span asp-validation-for="HireDate" class="text-danger"></span>
     </div>
 
     <div class="form-check mb-3">
-
         <input asp-for="IsActive" class="form-check-input" />
-
-        <label class="form-check-label">
+        <label asp-for="IsActive" class="form-check-label">
             Active
         </label>
-
     </div>
 
     <button class="btn btn-primary">
