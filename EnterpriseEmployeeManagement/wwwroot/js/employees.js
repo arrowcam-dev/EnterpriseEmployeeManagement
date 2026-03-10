@@ -17,6 +17,8 @@ function sortTable(column) {
 
 
 function loadEmployees(page = 1) {
+    showLoader();
+
     const search = document.getElementById("searchBox").value;
     const pageSize = document.getElementById("pageSize").value;
 
@@ -26,6 +28,9 @@ function loadEmployees(page = 1) {
             document.getElementById("employeeTable").innerHTML = html;
 
             updateSortIcons();
+        })
+        .finally(() => {
+            hideLoader();
         });
 }
 
@@ -122,11 +127,15 @@ document.addEventListener("submit", function (e) {
         e.preventDefault();
 
         const form = e.target;
+        const submitBtn = form.querySelector("button[type=submit]");
         const formData = new FormData(form);
 
         const url = form.id === "employeeForm"
             ? "/Employee/CreateModal"
             : "/Employee/EditModal";
+
+        disableButton(submitBtn);
+        showLoader();
 
         fetch(url, {
             method: "POST",
@@ -156,6 +165,10 @@ document.addEventListener("submit", function (e) {
             })
             .catch(() => {
                 showToast("Unexpected server error", "danger");
+            })
+            .finally(() => {
+                enableButton(submitBtn);
+                hideLoader();
             });
     }
 });
