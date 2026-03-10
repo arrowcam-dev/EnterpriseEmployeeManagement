@@ -19,40 +19,44 @@ namespace EnterpriseEmployeeManagement.Controllers
             _mapper = mapper;
         }
 
-        public async Task<IActionResult> Index(string search, int page = 1)
+        //public async Task<IActionResult> Index(string search, int page = 1)
+        //{
+        //    int pageSize = 10;
+
+        //    var query = _context.Employees
+        //        .Include(e => e.Department)
+        //        .AsQueryable();
+
+        //    if (!string.IsNullOrEmpty(search))
+        //    {
+        //        query = query.Where(e =>
+        //            e.FirstName.Contains(search) ||
+        //            e.LastName.Contains(search) ||
+        //            e.Email.Contains(search));
+        //    }
+
+        //    var totalCount = await query.CountAsync();
+
+        //    var employees = await query
+        //        .OrderBy(e => e.FirstName)
+        //        .Skip((page - 1) * pageSize)
+        //        .Take(pageSize)
+        //        .ProjectTo<EmployeeListViewModel>(_mapper.ConfigurationProvider)
+        //        .ToListAsync();
+
+        //    var result = new PagedResult<EmployeeListViewModel>
+        //    {
+        //        Items = employees,
+        //        TotalCount = totalCount,
+        //        PageNumber = page,
+        //        PageSize = pageSize
+        //    };
+
+        //    return View(result);
+        //}
+        public IActionResult Index()
         {
-            int pageSize = 10;
-
-            var query = _context.Employees
-                .Include(e => e.Department)
-                .AsQueryable();
-
-            if (!string.IsNullOrEmpty(search))
-            {
-                query = query.Where(e =>
-                    e.FirstName.Contains(search) ||
-                    e.LastName.Contains(search) ||
-                    e.Email.Contains(search));
-            }
-
-            var totalCount = await query.CountAsync();
-
-            var employees = await query
-                .OrderBy(e => e.FirstName)
-                .Skip((page - 1) * pageSize)
-                .Take(pageSize)
-                .ProjectTo<EmployeeListViewModel>(_mapper.ConfigurationProvider)
-                .ToListAsync();
-
-            var result = new PagedResult<EmployeeListViewModel>
-            {
-                Items = employees,
-                TotalCount = totalCount,
-                PageNumber = page,
-                PageSize = pageSize
-            };
-
-            return View(result);
+            return View();
         }
 
         // Deleted Employees (Admin)
@@ -186,6 +190,60 @@ namespace EnterpriseEmployeeManagement.Controllers
             }
 
             return RedirectToAction(nameof(Deleted));
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> LoadEmployees(
+            string search = "",
+            string sortColumn = "name",
+            string sortDirection = "asc",
+            int page = 1,
+            int pageSize = 10)
+        {
+            var query = _context.Employees
+                .Include(e => e.Department)
+                .AsQueryable();
+
+            // Search
+            if (!string.IsNullOrWhiteSpace(search))
+            {
+                query = query.Where(e =>
+                    e.FirstName.Contains(search) ||
+                    e.LastName.Contains(search) ||
+                    e.Email.Contains(search));
+            }
+
+            // Sorting
+            query = (sortColumn, sortDirection) switch
+            {
+                ("email", "asc") => query.OrderBy(e => e.Email),
+                ("email", "desc") => query.OrderByDescending(e => e.Email),
+
+                ("department", "asc") => query.OrderBy(e => e.Department.Name),
+                ("department", "desc") => query.OrderByDescending(e => e.Department.Name),
+
+                ("name", "desc") => query.OrderByDescending(e => e.FirstName),
+
+                _ => query.OrderBy(e => e.FirstName)
+            };
+
+            var total = await query.CountAsync();
+
+            var employees = await query
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ProjectTo<EmployeeListViewModel>(_mapper.ConfigurationProvider)
+                .ToListAsync();
+
+            var model = new PagedResult<EmployeeListViewModel>
+            {
+                Items = employees,
+                TotalCount = total,
+                PageNumber = page,
+                PageSize = pageSize
+            };
+
+            return PartialView("_EmployeeTable", model);
         }
 
     }

@@ -1,7 +1,4 @@
-﻿@model EnterpriseEmployeeManagement.ViewModels.PagedResult<
-EnterpriseEmployeeManagement.ViewModels.EmployeeListViewModel >
-
-@{
+﻿@{
     ViewData["Title"] = "Employees";
 }
 
@@ -33,7 +30,8 @@ EnterpriseEmployeeManagement.ViewModels.EmployeeListViewModel >
             <div class="col-md-4">
 
                 <input type="text"
-                       name="search"
+                       name="searchBox"
+                       id="searchBox"
                        value="@Context.Request.Query["search"]"
                        class="form-control"
                        placeholder="Search employee...">
@@ -42,7 +40,7 @@ EnterpriseEmployeeManagement.ViewModels.EmployeeListViewModel >
 
             <div class="col-md-2">
 
-                <select name="pageSize" class="form-select">
+                <select id="pageSize" name="pageSize" class="form-select">
 
                     <option value="10">10</option>
                     <option value="25">25</option>
@@ -62,136 +60,13 @@ EnterpriseEmployeeManagement.ViewModels.EmployeeListViewModel >
 
         </form>
 
-
-        <div class="table-responsive">
-
-            <table class="table table-hover align-middle">
-
-                <thead class="table-light">
-
-                    <tr>
-
-                        <th>
-                            <a asp-route-sort="name">Name</a>
-                        </th>
-
-                        <th>Email</th>
-
-                        <th>Department</th>
-
-                        <th>Position</th>
-
-                        <th>Status</th>
-
-                        <th style="width:160px">Actions</th>
-
-                    </tr>
-
-                </thead>
-
-                <tbody>
-
-                    @if (!Model.Items.Any())
-                    {
-                        <tr>
-                            <td colspan="6" class="text-center p-4">
-                                No employees found
-                            </td>
-                        </tr>
-                    }
-
-                    @foreach (var item in Model.Items)
-                    {
-
-                        <tr>
-
-                            <td>@item.FullName</td>
-
-                            <td>@item.Email</td>
-
-                            <td>@item.DepartmentName</td>
-
-                            <td>@item.Position</td>
-
-                            <td>
-
-                                @if (item.IsActive)
-                                {
-                                    <span class="badge bg-success">Active</span>
-                                }
-                                else
-                                {
-                                    <span class="badge bg-secondary">Inactive</span>
-                                }
-
-                            </td>
-
-                            <td>
-
-                                <a asp-action="Edit"
-                                   asp-route-id="@item.Id"
-                                   class="btn btn-sm btn-outline-warning">
-
-                                    <i class="bi bi-pencil"></i>
-
-                                </a>
-
-                                <a asp-action="Delete"
-                                   asp-route-id="@item.Id"
-                                   class="btn btn-sm btn-outline-danger"
-                                   onclick="return confirm('Delete employee?')">
-
-                                    <i class="bi bi-trash"></i>
-
-                                </a>
-
-                            </td>
-
-                        </tr>
-
-                    }
-
-                </tbody>
-
-            </table>
-
+        <div id="employeeTable">
         </div>
 
     </div>
 
-
-    <div class="card-footer">
-
-        @{
-            var totalPages = (int)Math.Ceiling((double)Model.TotalCount / Model.PageSize);
-        }
-
-        <nav>
-
-            <ul class="pagination justify-content-center mb-0">
-
-                @for (int i = 1; i <= totalPages; i++)
-                {
-
-                    <li class="page-item @(i == Model.PageNumber ? "active" : "")">
-
-                        <a class="page-link"
-                           asp-action="Index"
-                           asp-route-page="@i"
-                           asp-route-search="@Context.Request.Query["search"]">
-
-                            @i
-
-                        </a>
-
-                    </li>
-
-                }
-
-            </ul>
-
-        </nav>
-
-    </div>
-
 </div>
+
+@section Scripts {
+    <script src="~/js/employees.js" asp-append-version="true"></script>
+}
