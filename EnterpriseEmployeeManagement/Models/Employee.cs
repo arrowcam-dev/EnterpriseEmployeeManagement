@@ -10,19 +10,19 @@ namespace EnterpriseEmployeeManagement.Models
 
         public int DepartmentId { get; set; }
 
-        public string FirstName { get; set; }
+        public string FirstName { get; set; } = string.Empty;
 
-        public string LastName { get; set; }
+        public string LastName { get; set; } = string.Empty;
 
-        public string Email { get; set; }
+        public string Email { get; set; } = string.Empty;
 
-        public string Position { get; set; }
+        public string Position { get; set; } = string.Empty;
 
         public DateTime HireDate { get; set; }
 
         public bool IsActive { get; set; }
 
-        public Department Department { get; set; }
+        public Department? Department { get; set; }
         public DateTime CreatedDate { get; set; } = DateTime.UtcNow;
         public DateTime? UpdatedDate { get; set; }
         public bool IsDeleted { get; set; }

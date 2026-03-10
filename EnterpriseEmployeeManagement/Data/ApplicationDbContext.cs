@@ -45,6 +45,12 @@ namespace EnterpriseEmployeeManagement.Data
                     !d.IsDeleted &&
                     d.CompanyId == _tenantProvider.GetCompanyId());
 
+            modelBuilder.Entity<Employee>()
+                .HasOne(e => e.Department)
+                .WithMany(d => d.Employees)
+                .HasForeignKey(e => e.DepartmentId)
+                .OnDelete(DeleteBehavior.Restrict);
+
         }
 
         public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
