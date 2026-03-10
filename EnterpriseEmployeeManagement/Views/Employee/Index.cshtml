@@ -28,33 +28,24 @@
         <form method="get" class="row g-2 mb-3">
 
             <div class="col-md-4">
+                <div class="input-group">
 
-                <input type="text"
-                       name="searchBox"
-                       id="searchBox"
-                       value="@Context.Request.Query["search"]"
-                       class="form-control"
-                       placeholder="Search employee...">
+                    <span class="input-group-text">
+                        <i class="bi bi-search"></i>
+                    </span>
 
+                    <input id="searchBox" class="form-control" value="@Context.Request.Query["search"]" placeholder="Search employees..." />
+
+                </div>
             </div>
 
             <div class="col-md-2">
 
                 <select id="pageSize" name="pageSize" class="form-select">
-
                     <option value="10">10</option>
                     <option value="25">25</option>
                     <option value="50">50</option>
-
                 </select>
-
-            </div>
-
-            <div class="col-md-2">
-
-                <button class="btn btn-outline-primary w-100">
-                    Search
-                </button>
 
             </div>
 

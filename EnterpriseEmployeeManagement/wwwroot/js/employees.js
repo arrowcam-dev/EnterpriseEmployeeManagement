@@ -56,9 +56,14 @@ function updateSortIcons() {
     }
 }
 
+let searchTimeout;
 
 document.getElementById("searchBox").addEventListener("keyup", () => {
-    loadEmployees(1);
+    clearTimeout(searchTimeout);
+
+    searchTimeout = setTimeout(() => {
+        loadEmployees(1);
+    }, 400);
 });
 
 document.getElementById("pageSize").addEventListener("change", () => {
