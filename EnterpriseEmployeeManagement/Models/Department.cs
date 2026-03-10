@@ -2,7 +2,7 @@
 
 namespace EnterpriseEmployeeManagement.Models
 {
-    public class Department : ITenantEntity
+    public class Department : ITenantEntity, IAuditableEntity, ISoftDelete
     {
         public int Id { get; set; }
 
@@ -17,5 +17,7 @@ namespace EnterpriseEmployeeManagement.Models
         public Company? Company { get; set; }
 
         public ICollection<Employee>? Employees { get; set; }
+        public DateTime? UpdatedDate { get; set; }
+        public bool IsDeleted { get; set; }
     }
 }

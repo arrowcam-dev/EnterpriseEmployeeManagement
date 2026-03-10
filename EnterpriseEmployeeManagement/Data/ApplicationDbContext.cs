@@ -34,17 +34,47 @@ namespace EnterpriseEmployeeManagement.Data
                      CreatedDate = new DateTime(2025, 1, 1)
                  }
              );
+
+            modelBuilder.Entity<Employee>()
+                .HasQueryFilter(e =>
+                    !e.IsDeleted &&
+                    e.CompanyId == _tenantProvider.GetCompanyId());
+
+            modelBuilder.Entity<Department>()
+                .HasQueryFilter(d =>
+                    !d.IsDeleted &&
+                    d.CompanyId == _tenantProvider.GetCompanyId());
+
         }
 
         public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
         {
             var companyId = _tenantProvider.GetCompanyId();
 
-            foreach (var entry in ChangeTracker.Entries<ITenantEntity>())
+            foreach (var entry in ChangeTracker.Entries())
             {
-                if (entry.State == EntityState.Added)
+                if (entry.Entity is ITenantEntity tenantEntity &&
+                    entry.State == EntityState.Added)
                 {
-                    entry.Entity.CompanyId = companyId;
+                    tenantEntity.CompanyId = companyId;
+                }
+
+                if (entry.Entity is IAuditableEntity auditEntity)
+                {
+                    if (entry.State == EntityState.Added)
+                        auditEntity.CreatedDate = DateTime.UtcNow;
+
+                    if (entry.State == EntityState.Modified)
+                        auditEntity.UpdatedDate = DateTime.UtcNow;
+                }
+
+                if (entry.Entity is ISoftDelete softDelete)
+                {
+                    if (entry.State == EntityState.Deleted)
+                    {
+                        entry.State = EntityState.Modified;
+                        softDelete.IsDeleted = true;
+                    }
                 }
             }
 
