@@ -1,22 +1,30 @@
 ﻿const ModalForms = (function () {
 
     function openModal(url, modalId, bodyId) {
-        console.log("Opening modal with URL:", url);
 
-        fetch(url)
-            .then(res => res.text())
+        Api.get(url)
             .then(html => {
-
                 const body = document.getElementById(bodyId);
-
                 body.innerHTML = html;
-
                 const form = body.querySelector("form");
-
                 UI.enableFormValidation(form);
-
                 new bootstrap.Modal(modalId).show();
             });
+
+        //fetch(url)
+        //    .then(res => res.text())
+        //    .then(html => {
+
+        //        const body = document.getElementById(bodyId);
+
+        //        body.innerHTML = html;
+
+        //        const form = body.querySelector("form");
+
+        //        UI.enableFormValidation(form);
+
+        //        new bootstrap.Modal(modalId).show();
+        //    });
     }
 
     function bindActions(containerSelector, config) {
@@ -67,18 +75,19 @@
 
         modal.show();
 
-        const confirmBtn =
-            document.querySelector(config.deleteConfirmBtn);
+        const confirmBtn = document.querySelector(config.deleteConfirmBtn);
 
         confirmBtn.onclick = function () {
 
-            fetch(config.deleteUrl.replace("{id}", id))
+            Api.delete(config.deleteUrl.replace("{id}", id))
                 .then(() => {
-
                     modal.hide();
 
-                    if (config.afterDelete)
+                    if (config.afterDelete) {
                         config.afterDelete();
+                    }
+
+                    UI.toast("Deleted successfully");
                 });
         };
     }
@@ -101,37 +110,51 @@ document.addEventListener("submit", function (e) {
     UI.disableButton(submitBtn);
     UI.showLoader();
 
-    fetch(url, {
-        method: form.method || "POST",
-        body: new FormData(form)
-    })
-        .then(async res => {
+    Api.post(url, new FormData(form))
+        .then(() => {
+            bootstrap.Modal
+                .getInstance(document.getElementById('employeeModal'))
+                .hide();
+            UI.toast("Saved successfully");
 
-            if (res.ok) {
+            employeeTable.load();
 
-                bootstrap.Modal
-                    .getInstance(document.getElementById('employeeModal'))
-                    .hide();
-
-                UI.toast("Saved successfully");
-
-                if (window.employeeTable) {
-                    employeeTable.load();
-                }
-
-                return;
-            }
-
-            const errors = await res.json();
-
+        }).catch(errors => {
             displayValidationErrors(errors);
-        })
-        .catch(() => {
-            UI.toast("Unexpected server error", "danger");
-        })
-        .finally(() => {
-
-            UI.enableButton(submitBtn);
-            UI.hideLoader();
         });
+
+
+    //fetch(url, {
+    //    method: form.method || "POST",
+    //    body: new FormData(form)
+    //})
+    //    .then(async res => {
+
+    //        if (res.ok) {
+
+    //            bootstrap.Modal
+    //                .getInstance(document.getElementById('employeeModal'))
+    //                .hide();
+
+    //            UI.toast("Saved successfully");
+
+    //            if (window.employeeTable) {
+    //                employeeTable.load();
+    //            }
+
+    //            return;
+    //        }
+
+    //        const errors = await res.json();
+
+    //        displayValidationErrors(errors);
+    //    })
+    //    .catch(() => {
+    //        UI.toast("Unexpected server error", "danger");
+    //    })
+    //    .finally(() => {
+
+    //        UI.enableButton(submitBtn);
+    //        UI.hideLoader();
+    //    });
 });

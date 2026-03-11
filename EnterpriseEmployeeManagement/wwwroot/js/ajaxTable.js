@@ -67,18 +67,16 @@
         const url =
             `${config.url}?search=${getSearch()}&page=${page}&pageSize=${getPageSize()}&sortColumn=${state.sortColumn}&sortDirection=${state.sortDirection}`;
 
-        fetch(url)
-            .then(r => r.text())
+        Api.get(url, { loader: false })
             .then(html => {
-
                 document.querySelector(config.table).innerHTML = html;
 
                 updateSortIcons();
 
-                if (config.afterLoad)
+                if (config.afterLoad) {
                     config.afterLoad();
-            })
-            .finally(hideLoader);
+                }
+            }).finally(hideLoader);
     }
 
     function sort(column) {
