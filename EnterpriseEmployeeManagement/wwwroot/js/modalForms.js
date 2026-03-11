@@ -120,41 +120,6 @@ document.addEventListener("submit", function (e) {
             employeeTable.load();
 
         }).catch(errors => {
-            displayValidationErrors(errors);
+            UI.displayValidationErrors(errors);
         });
-
-
-    //fetch(url, {
-    //    method: form.method || "POST",
-    //    body: new FormData(form)
-    //})
-    //    .then(async res => {
-
-    //        if (res.ok) {
-
-    //            bootstrap.Modal
-    //                .getInstance(document.getElementById('employeeModal'))
-    //                .hide();
-
-    //            UI.toast("Saved successfully");
-
-    //            if (window.employeeTable) {
-    //                employeeTable.load();
-    //            }
-
-    //            return;
-    //        }
-
-    //        const errors = await res.json();
-
-    //        displayValidationErrors(errors);
-    //    })
-    //    .catch(() => {
-    //        UI.toast("Unexpected server error", "danger");
-    //    })
-    //    .finally(() => {
-
-    //        UI.enableButton(submitBtn);
-    //        UI.hideLoader();
-    //    });
 });

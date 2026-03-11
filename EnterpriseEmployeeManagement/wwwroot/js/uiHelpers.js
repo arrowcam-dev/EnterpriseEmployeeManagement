@@ -47,5 +47,30 @@
         $(form).removeData("unobtrusiveValidation");
 
         $.validator.unobtrusive.parse(form);
+    },
+    displayValidationErrors(errors) {
+
+        document
+            .querySelectorAll("[data-valmsg-for]")
+            .forEach(x => x.innerText = "");
+
+        let firstField = null;
+
+        for (const key in errors) {
+
+            const field = document.querySelector(`[data-valmsg-for="${key}"]`);
+
+            if (field) {
+
+                field.innerText = errors[key][0];
+
+                if (!firstField) {
+                    firstField = document.querySelector(`[name="${key}"]`);
+                }
+            }
+        }
+
+        firstField?.focus();
     }
+
 };
