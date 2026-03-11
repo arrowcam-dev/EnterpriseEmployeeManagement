@@ -117,7 +117,7 @@ document.addEventListener("submit", function (e) {
                 .hide();
             UI.toast("Saved successfully");
 
-            employeeTable.load();
+            CrudPage.reload();
 
         }).catch(errors => {
             UI.displayValidationErrors(errors);
