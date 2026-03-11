@@ -1,5 +1,8 @@
 ﻿let currentSortColumn = "name";
 let currentSortDirection = "asc";
+const employeeTableStateKey = "employee_table_state";
+let searchTimeout;
+let deleteEmployeeId = 0;
 
 function sortTable(column) {
     if (currentSortColumn === column) {
@@ -15,12 +18,13 @@ function sortTable(column) {
     loadEmployees(1);
 }
 
-
 function loadEmployees(page = 1) {
     showTableLoader();
 
     const search = document.getElementById("searchBox").value;
     const pageSize = document.getElementById("pageSize").value;
+
+    saveTableState(page);
 
     fetch(`/Employee/LoadEmployees?search=${search}&page=${page}&pageSize=${pageSize}&sortColumn=${currentSortColumn}&sortDirection=${currentSortDirection}`)
         .then(res => res.text())
@@ -56,8 +60,6 @@ function updateSortIcons() {
     }
 }
 
-let searchTimeout;
-
 document.getElementById("searchBox").addEventListener("keyup", () => {
     clearTimeout(searchTimeout);
 
@@ -71,10 +73,16 @@ document.getElementById("pageSize").addEventListener("change", () => {
 });
 
 document.addEventListener("DOMContentLoaded", () => {
-    loadEmployees();
-});
+    const state = loadTableState();
+    if (state) {
+        restoreTableState(state);
 
-let deleteEmployeeId = 0;
+        loadEmployees(state.page || 1);
+    }
+    else {
+        loadEmployees();
+    }
+});
 
 function openCreateModal() {
     fetch('/Employee/CreateModal')
@@ -221,3 +229,46 @@ function hideTableLoader() {
         .classList.remove("table-loading");
 }
 
+function saveTableState(page = 1) {
+    const state = {
+        search: document.getElementById("searchBox").value,
+        pageSize: document.getElementById("pageSize").value,
+        sortColumn: currentSortColumn,
+        sortDirection: currentSortDirection,
+        page: page
+    };
+
+    localStorage.setItem(
+        employeeTableStateKey,
+        JSON.stringify(state)
+    );
+}
+
+function loadTableState() {
+    const state = localStorage.getItem(employeeTableStateKey);
+
+    if (!state) return null;
+
+    return JSON.parse(state);
+}
+function restoreTableState(state) {
+    if (!state) return;
+
+    if (state.search)
+        document.getElementById("searchBox").value = state.search;
+
+    if (state.pageSize)
+        document.getElementById("pageSize").value = state.pageSize;
+
+    if (state.sortColumn)
+        currentSortColumn = state.sortColumn;
+
+    if (state.sortDirection)
+        currentSortDirection = state.sortDirection;
+}
+
+function clearTableState() {
+    localStorage.removeItem(employeeTableStateKey);
+
+    location.reload();
+}
