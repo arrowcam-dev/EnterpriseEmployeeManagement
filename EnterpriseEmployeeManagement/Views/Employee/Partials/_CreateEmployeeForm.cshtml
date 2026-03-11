@@ -1,7 +1,7 @@
 ﻿@using EnterpriseEmployeeManagement.ViewModels
 @model EmployeeFormViewModel
 
-<form id="employeeForm">
+<form id="employeeForm" method="post" asp-action="CreateModal" data-ajax-form>
     <div class="alert alert-danger d-none" id="formError"></div>
 
     <div class="mb-3">

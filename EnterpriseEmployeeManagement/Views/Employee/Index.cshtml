@@ -2,7 +2,7 @@
     ViewData["Title"] = "Employees";
 }
 
-<div class="card shadow-sm">
+<div id="employeeCard" class="card shadow-sm">
 
     <div class="card-header d-flex justify-content-between align-items-center">
 
@@ -10,7 +10,7 @@
 
         <div>
 
-            <button type="button" class="btn btn-primary btn-sm" onclick="openCreateModal()">
+            <button type="button" class="btn btn-primary btn-sm" data-create>
                 <i class="bi bi-plus-lg"></i> New Employee
             </button>
 
@@ -48,7 +48,7 @@
 
             </div>
             <div class="col-md-2">
-                <button class="btn btn-outline-secondary" onclick="clearTableState()">
+                <button type="button" class="btn btn-outline-secondary" onclick="employeeTable.clearState()">
                     Reset
                 </button>
             </div>
@@ -142,5 +142,5 @@
 </div>
 
 @section Scripts {
-    <script src="~/js/employees.js" asp-append-version="true"></script>
+    <script src="~/js/employeePage.js" asp-append-version="true"></script>
 }

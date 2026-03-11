@@ -10,21 +10,21 @@ EnterpriseEmployeeManagement.ViewModels.EmployeeListViewModel >
             <tr>
 
                 <th>
-                    <a href="#" onclick="sortTable('name')">
+                    <a href="#" onclick="employeeTable.sort('name')">
                         Name
                         <i id="sortIcon-name" class="ms-1"></i>
                     </a>
                 </th>
 
                 <th>
-                    <a href="#" onclick="sortTable('email')">
+                    <a href="#" onclick="employeeTable.sort('email')">
                         Email
                         <i id="sortIcon-email" class="ms-1"></i>
                     </a>
                 </th>
 
                 <th>
-                    <a href="#" onclick="sortTable('department')">
+                    <a href="#" onclick="employeeTable.sort('department')">
                         Department
                         <i id="sortIcon-department" class="ms-1"></i>
                     </a>
@@ -74,13 +74,19 @@ EnterpriseEmployeeManagement.ViewModels.EmployeeListViewModel >
 
                     <td>
 
-                        <button class="btn btn-sm btn-outline-warning"
+                        @* <button class="btn btn-sm btn-outline-warning"
                                 onclick="openEditModal(@item.Id)">
+                            Edit
+                        </button> *@
+                        <button class="btn btn-sm btn-outline-warning" data-edit="@item.Id">
                             Edit
                         </button>
 
-                        <button class="btn btn-sm btn-outline-danger"
+                        @* <button class="btn btn-sm btn-outline-danger"
                                 onclick="confirmDelete(@item.Id)">
+                            Delete
+                        </button> *@
+                        <button class="btn btn-sm btn-outline-danger" data-delete="@item.Id">
                             Delete
                         </button>
                         
@@ -108,12 +114,8 @@ EnterpriseEmployeeManagement.ViewModels.EmployeeListViewModel >
         {
             <li class="page-item @(i == Model.PageNumber ? "active" : "")">
 
-                <a href="#"
-                   class="page-link"
-                   onclick="loadEmployees(@i)">
-
+                <a href="#" class="page-link" onclick="employeeTable.load(@i)">
                     @i
-
                 </a>
 
             </li>
