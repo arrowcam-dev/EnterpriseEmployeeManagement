@@ -66,18 +66,22 @@ document.addEventListener("submit", function (e) {
     const url = form.action;
 
     UI.disableButton(submitBtn);
-    UI.showLoader();
 
     Api.post(url, new FormData(form))
         .then(() => {
+            const modalElement = form.closest(".modal");
+
             bootstrap.Modal
-                .getInstance(document.getElementById('employeeModal'))
+                .getInstance(modalElement)
                 .hide();
+
             UI.toast("Saved successfully");
 
             CrudPage.reload();
 
         }).catch(errors => {
             UI.displayValidationErrors(errors);
+        }).finally(() => {
+            UI.enableButton(submitBtn);
         });
 });
