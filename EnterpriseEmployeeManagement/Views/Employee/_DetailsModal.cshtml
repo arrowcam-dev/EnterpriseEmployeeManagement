@@ -1,0 +1,34 @@
+﻿<div class="d-none" data-modal-title="Employee Details (@Model.FirstName @Model.LastName)"></div>
+<div class="row">
+
+    <div class="col-md-6">
+        <strong>First Name</strong>
+        <p>@Model.FirstName</p>
+    </div>
+
+    <div class="col-md-6">
+        <strong>Last Name</strong>
+        <p>@Model.LastName</p>
+    </div>
+
+    <div class="col-md-6">
+        <strong>Email</strong>
+        <p>@Model.Email</p>
+    </div>
+
+    <div class="col-md-6">
+        <strong>Department</strong>
+        <p>@Model.Department?.Name</p>
+    </div>
+
+    <div class="col-md-6">
+        <strong>Position</strong>
+        <p>@Model.Position</p>
+    </div>
+
+    <div class="col-md-6">
+        <strong>Hire Date</strong>
+        <p>@Model.HireDate.ToShortDateString()</p>
+    </div>
+
+</div>

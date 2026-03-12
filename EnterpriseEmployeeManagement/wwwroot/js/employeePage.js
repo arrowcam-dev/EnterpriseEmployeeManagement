@@ -8,6 +8,7 @@
 
         createUrl: "/Employee/CreateModal",
         editUrl: "/Employee/EditModal/{id}",
+        detailsUrl: "/Employee/DetailsModal/{id}",
         deleteUrl: "/Employee/Delete/{id}",
 
         tableSelector: "#employeeTable",
@@ -19,13 +20,7 @@
         stateKey: "employee_table_state",
 
         columns: ["name", "email", "department"],
-        defaultSort: "name",
-
-        modalId: "#employeeModal",
-        modalBodyId: "employeeModalBody",
-
-        deleteModalId: "#deleteModal",
-        deleteConfirmBtn: "#confirmDeleteBtn"
+        defaultSort: "name"
     });
 
 });

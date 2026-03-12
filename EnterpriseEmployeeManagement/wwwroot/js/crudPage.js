@@ -20,33 +20,9 @@
 
         table.restore();
 
-        //ModalForms.bindActions(config.pageContainer, {
-
-        //    createUrl: config.createUrl,
-        //    editUrl: config.editUrl,
-        //    deleteUrl: config.deleteUrl,
-
-        //    modalId: config.modalId,
-        //    bodyId: config.modalBodyId,
-
-        //    deleteModalId: config.deleteModalId,
-        //    deleteConfirmBtn: config.deleteConfirmBtn,
-
-        //    afterDelete: () => table.load()
-        //});
         bindEvents(config.pageContainer);
 
     }
-    //function sort(column) {
-    //    if (table) table.sort(column);
-    //}
-    //function reset() {
-    //    if (table) table.clearState();
-    //}
-    //function loadPage(page) {
-
-    //    if (table) table.load(page);
-    //}
 
     function bindEvents(container) {
 
@@ -81,32 +57,57 @@
 
                     const action = actionBtn.dataset.action;
                     const id = actionBtn.dataset.id;
+                    const rowName = actionBtn.dataset.name;
 
-                    handleAction(action, id);
+                    handleAction(action, id, rowName);
                 }
             });
     }
 
-    function handleAction(action, id) {
+    function handleAction(action, id, rowName) {
 
         if (action === "reset") table.clearState();
 
         if (action === "create") {
-            ModalForms.openModal(config.createUrl,
-                config.modalId,
-                config.modalBodyId);
+            ModalForms.open(config.createUrl, "Create");
         }
 
         if (action === "edit") {
-            ModalForms.openModal(
+            ModalForms.open(
                 config.editUrl.replace("{id}", id),
-                config.modalId,
-                config.modalBodyId
+                "Edit"
             );
         }
+        if (action === "details")
+            ModalForms.open(
+                config.detailsUrl.replace("{id}", id),
+                "Details"
+            );
 
+        //if (action === "delete") {
+        //    ModalForms.confirmDelete(id, config.deleteUrl, () => table.load());
+        //}
         if (action === "delete") {
-            ModalForms.confirmDelete(id, config.deleteUrl, () => table.load());
+            
+            ModalForms.confirm({
+
+                title: "Delete Employee",
+                message: `Are you sure you want to delete <strong>${rowName || "this record"}</strong>?`,
+                confirmText: "Delete",
+                btnClass: "btn btn-danger",
+                onConfirm: () => {
+
+                    Api.delete(config.deleteUrl.replace("{id}", id))
+                        .then(() => {
+
+                            UI.toast("Deleted successfully");
+
+                            table.load();
+                        });
+
+                }
+
+            });
         }
     }
     function reload() {

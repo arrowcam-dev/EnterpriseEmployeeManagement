@@ -1,6 +1,8 @@
 ﻿@using EnterpriseEmployeeManagement.ViewModels
 @model EmployeeFormViewModel
 
+<div class="d-none" data-modal-title="Edit Employee (@Model.FirstName @Model.LastName)"></div>
+
 <form id="editEmployeeForm" method="post" asp-action="EditModal" data-ajax-form>
 
     <div class="alert alert-danger d-none" id="formError"></div>

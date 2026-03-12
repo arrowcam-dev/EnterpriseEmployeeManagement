@@ -1,19 +1,60 @@
 ﻿const ModalForms = (function () {
 
-    function openModal(url, modalId, bodyId) {
+    function open(url, title) {
 
         Api.get(url, { loader: false })
             .then(html => {
-                const body = document.getElementById(bodyId);
+
+                const body = document.getElementById("crudModalBody");
+                const titleElement = document.getElementById("crudModalTitle");
 
                 body.innerHTML = html;
 
+                // Default title
+                if (title) titleElement.innerText = title;
+
+                // If the partial view provides a dynamic title
+                const dynamicTitle = body.querySelector("[data-modal-title]");
+
+                if (dynamicTitle)
+                    titleElement.innerText = dynamicTitle.dataset.modalTitle;
+
                 const form = body.querySelector("form");
 
-                UI.enableFormValidation(form);
+                if (form) UI.enableFormValidation(form);
 
-                new bootstrap.Modal(modalId).show();
+                new bootstrap.Modal("#crudModal").show();
             });
+    }
+
+    function confirm(options) {
+
+        const modal = new bootstrap.Modal("#confirmModal");
+
+        document.getElementById("confirmModalTitle").innerText = options.title || "Confirm";
+
+        document.getElementById("confirmModalMessage").innerHTML = options.message;
+
+        let btn = document.getElementById("confirmModalBtn");
+
+        const newBtn = btn.cloneNode(true);
+
+        btn.replaceWith(newBtn);
+
+        btn = newBtn;
+
+        btn.className = options.btnClass || "btn btn-danger";
+
+        btn.innerText = options.confirmText || "Confirm";
+
+        btn.addEventListener("click", function () {
+
+            modal.hide();
+
+            if (options.onConfirm) options.onConfirm();
+        });
+
+        modal.show();
     }
 
     function confirmDelete(id, deleteUrl, afterDelete) {
@@ -50,7 +91,7 @@
         });
     }
 
-    return { openModal, confirmDelete };
+    return { open, confirm };
 
 })();
 

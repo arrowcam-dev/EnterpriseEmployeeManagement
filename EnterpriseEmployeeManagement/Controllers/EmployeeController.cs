@@ -286,5 +286,15 @@ namespace EnterpriseEmployeeManagement.Controllers
             return Ok();
         }
 
+        [HttpGet]
+        public async Task<PartialViewResult> DetailsModal(int id)
+        {
+            var employee = await _context.Employees
+                .Include(e => e.Department)
+                .FirstOrDefaultAsync(e => e.Id == id);
+
+            return PartialView("_DetailsModal", employee);
+        }
+
     }
 }
