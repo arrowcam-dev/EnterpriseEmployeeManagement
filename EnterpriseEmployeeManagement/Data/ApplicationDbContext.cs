@@ -21,6 +21,9 @@ namespace EnterpriseEmployeeManagement.Data
         public DbSet<Employee> Employees { get; set; }
 
         public DbSet<Department> Departments { get; set; }
+        public DbSet<User> Users { get; set; }
+
+        public DbSet<UserRole> UserRoles { get; set; }
 
         override protected void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -51,6 +54,16 @@ namespace EnterpriseEmployeeManagement.Data
                 .HasForeignKey(e => e.DepartmentId)
                 .OnDelete(DeleteBehavior.Restrict);
 
+            modelBuilder.Entity<UserRole>()
+                .HasOne(r => r.User)
+                .WithMany(u => u.Roles)
+                .HasForeignKey(r => r.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<User>()
+                .HasQueryFilter(e =>
+                    !e.IsDeleted &&
+                    e.CompanyId == _tenantProvider.GetCompanyId());
         }
 
         public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
