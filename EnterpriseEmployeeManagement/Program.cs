@@ -14,7 +14,16 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 builder.Services.AddScoped<ITenantProvider, TenantProvider>();
 builder.Services.AddAutoMapper(typeof(MappingProfile));
 
+builder.Services.AddScoped<ISeedService, SeedService>();
+
 var app = builder.Build();
+
+using (var scope = app.Services.CreateScope())
+{
+    var seedService = scope.ServiceProvider.GetRequiredService<ISeedService>();
+
+    await seedService.SeedAsync();
+}
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
