@@ -29,24 +29,22 @@ namespace EnterpriseEmployeeManagement.Data
         {
             base.OnModelCreating(modelBuilder);
 
-            modelBuilder.Entity<Company>().HasData(
-                 new Company
-                 {
-                     Id = 1,
-                     Name = "Demo Company",
-                     CreatedDate = new DateTime(2025, 1, 1)
-                 }
-             );
+            //modelBuilder.Entity<Company>().HasData(
+            //     new Company
+            //     {
+            //         Id = 1,
+            //         Name = "Demo Company",
+            //         CreatedDate = new DateTime(2025, 1, 1)
+            //     }
+            // );
 
             modelBuilder.Entity<Employee>()
-                .HasQueryFilter(e =>
-                    !e.IsDeleted &&
-                    e.CompanyId == _tenantProvider.GetCompanyId());
+                .HasQueryFilter(x =>
+                    !_tenantProvider.DisableTenantFilter ? (x.CompanyId == _tenantProvider.CompanyId && !x.IsDeleted) : !x.IsDeleted);
 
             modelBuilder.Entity<Department>()
-                .HasQueryFilter(d =>
-                    !d.IsDeleted &&
-                    d.CompanyId == _tenantProvider.GetCompanyId());
+                .HasQueryFilter(x =>
+                    !_tenantProvider.DisableTenantFilter ? (x.CompanyId == _tenantProvider.CompanyId && !x.IsDeleted) : !x.IsDeleted);
 
             modelBuilder.Entity<Employee>()
                 .HasOne(e => e.Department)
@@ -61,30 +59,36 @@ namespace EnterpriseEmployeeManagement.Data
                 .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<User>()
-                .HasQueryFilter(e =>
-                    !e.IsDeleted &&
-                    e.CompanyId == _tenantProvider.GetCompanyId());
+                .HasQueryFilter(x =>
+                    !_tenantProvider.DisableTenantFilter ? (x.CompanyId == _tenantProvider.CompanyId && !x.IsDeleted) : !x.IsDeleted);
         }
 
         public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
         {
-            var companyId = _tenantProvider.GetCompanyId();
+            var companyId = _tenantProvider.CompanyId;
 
             foreach (var entry in ChangeTracker.Entries())
             {
                 if (entry.Entity is ITenantEntity tenantEntity &&
                     entry.State == EntityState.Added)
                 {
-                    tenantEntity.CompanyId = companyId;
+                    if (!_tenantProvider.DisableTenantFilter)
+                    {
+                        tenantEntity.CompanyId = companyId;
+                    }
                 }
 
                 if (entry.Entity is IAuditableEntity auditEntity)
                 {
                     if (entry.State == EntityState.Added)
+                    {
                         auditEntity.CreatedDate = DateTime.UtcNow;
+                    }
 
                     if (entry.State == EntityState.Modified)
+                    {
                         auditEntity.UpdatedDate = DateTime.UtcNow;
+                    }
                 }
 
                 if (entry.Entity is ISoftDelete softDelete)

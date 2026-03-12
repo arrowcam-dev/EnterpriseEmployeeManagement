@@ -9,25 +9,31 @@ namespace EnterpriseEmployeeManagement.Services
     public class SeedService: ISeedService
     {
         private readonly ApplicationDbContext _context;
-
-        public SeedService(ApplicationDbContext context)
+        private readonly ITenantProvider _tenantProvider;
+        public SeedService(ApplicationDbContext context, ITenantProvider tenantProvider)
         {
             _context = context;
+            _tenantProvider = tenantProvider;
         }
 
         public async Task SeedAsync()
         {
+            _tenantProvider.DisableTenantFilter = true;
+
             await SeedCompanyAsync();
             await SeedAdminUserAsync();
+
+            _tenantProvider.DisableTenantFilter = true;
         }
         private async Task SeedCompanyAsync()
         {
-            if (await _context.Companies.AnyAsync())
+            if (await _context.Companies.IgnoreQueryFilters().AnyAsync())
                 return;
 
             var company = new Company
             {
-                Name = "Demo Company"
+                Name = "Demo Company",
+                CreatedDate = DateTime.UtcNow
             };
 
             _context.Companies.Add(company);
@@ -37,10 +43,10 @@ namespace EnterpriseEmployeeManagement.Services
 
         private async Task SeedAdminUserAsync()
         {
-            if (await _context.Users.AnyAsync())
+            if (await _context.Users.IgnoreQueryFilters().AnyAsync())
                 return;
 
-            var company = await _context.Companies.FirstAsync();
+            var company = await _context.Companies.IgnoreQueryFilters().FirstAsync();
 
             var user = new User
             {

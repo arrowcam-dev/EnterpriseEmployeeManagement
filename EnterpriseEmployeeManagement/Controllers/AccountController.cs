@@ -32,6 +32,7 @@ namespace EnterpriseEmployeeManagement.Controllers
             if (!ModelState.IsValid) return View(model);
 
             var user = await _context.Users
+                .IgnoreQueryFilters()
                 .Include(x => x.Roles)
                 .FirstOrDefaultAsync(x =>
                     x.Username == model.Username &&

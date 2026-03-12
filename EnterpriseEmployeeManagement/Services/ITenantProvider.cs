@@ -2,6 +2,8 @@
 {
     public interface ITenantProvider
     {
-        int GetCompanyId();
+        //int GetCompanyId();
+        int CompanyId { get; set; }
+        bool DisableTenantFilter { get; set; }
     }
 }

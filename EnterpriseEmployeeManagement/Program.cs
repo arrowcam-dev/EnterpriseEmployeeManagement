@@ -1,5 +1,6 @@
 using EnterpriseEmployeeManagement.Data;
 using EnterpriseEmployeeManagement.Mappings;
+using EnterpriseEmployeeManagement.Middleware;
 using EnterpriseEmployeeManagement.Services;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
@@ -55,6 +56,7 @@ app.UseStaticFiles();
 app.UseRouting();
 
 app.UseAuthentication();
+app.UseMiddleware<TenantMiddleware>();
 app.UseAuthorization();
 
 app.MapStaticAssets();
