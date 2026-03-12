@@ -10,7 +10,7 @@
 
         <div>
 
-            <button type="button" class="btn btn-primary btn-sm" data-create>
+            <button type="button" class="btn btn-primary btn-sm" data-action="create">
                 <i class="bi bi-plus-lg"></i> New Employee
             </button>
 
@@ -48,7 +48,7 @@
 
             </div>
             <div class="col-md-2">
-                <button type="button" class="btn btn-outline-secondary" onclick="CrudPage.reset()">
+                <button type="button" class="btn btn-outline-secondary" data-action="reset">
                     Reset
                 </button>
             </div>
@@ -114,25 +114,17 @@
             </div>
 
             <div class="modal-body">
-
                 Are you sure you want to delete this employee?
-
             </div>
 
             <div class="modal-footer">
-
                 <button class="btn btn-secondary" data-bs-dismiss="modal">
-
                     Cancel
-
                 </button>
 
                 <button class="btn btn-danger" id="confirmDeleteBtn">
-
                     Delete
-
                 </button>
-
             </div>
 
         </div>

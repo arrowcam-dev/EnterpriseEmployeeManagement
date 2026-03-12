@@ -2,97 +2,55 @@
 
     function openModal(url, modalId, bodyId) {
 
-        Api.get(url)
+        Api.get(url, { loader: false })
             .then(html => {
                 const body = document.getElementById(bodyId);
+
                 body.innerHTML = html;
+
                 const form = body.querySelector("form");
+
                 UI.enableFormValidation(form);
+
                 new bootstrap.Modal(modalId).show();
             });
-
-        //fetch(url)
-        //    .then(res => res.text())
-        //    .then(html => {
-
-        //        const body = document.getElementById(bodyId);
-
-        //        body.innerHTML = html;
-
-        //        const form = body.querySelector("form");
-
-        //        UI.enableFormValidation(form);
-
-        //        new bootstrap.Modal(modalId).show();
-        //    });
     }
 
-    function bindActions(containerSelector, config) {
+    function confirmDelete(id, deleteUrl, afterDelete) {
 
-        document.querySelector(containerSelector)
-            .addEventListener("click", function (e) {
+        const modalElement = document.getElementById("deleteModal");
 
-                const createBtn = e.target.closest("[data-create]");
-                const editBtn = e.target.closest("[data-edit]");
-                const deleteBtn = e.target.closest("[data-delete]");
-
-                if (createBtn) {
-
-                    openModal(
-                        config.createUrl,
-                        config.modalId,
-                        config.bodyId
-                    );
-
-                    return;
-                }
-
-                if (editBtn) {
-
-                    const id = editBtn.dataset.edit;
-
-                    openModal(
-                        config.editUrl.replace("{id}", id),
-                        config.modalId,
-                        config.bodyId
-                    );
-
-                    return;
-                }
-
-                if (deleteBtn) {
-
-                    const id = deleteBtn.dataset.delete;
-
-                    confirmDelete(id, config);
-                }
-            });
-    }
-
-    function confirmDelete(id, config) {
-
-        const modal = new bootstrap.Modal(config.deleteModalId);
+        const modal = new bootstrap.Modal(modalElement);
 
         modal.show();
 
-        const confirmBtn = document.querySelector(config.deleteConfirmBtn);
+        let confirmBtn = document.getElementById("confirmDeleteBtn");
 
-        confirmBtn.onclick = function () {
+        const newBtn = confirmBtn.cloneNode(true);
 
-            Api.delete(config.deleteUrl.replace("{id}", id))
+        confirmBtn.replaceWith(newBtn);
+
+        confirmBtn = newBtn;
+
+        confirmBtn.addEventListener("click", function () {
+
+            Api.delete(deleteUrl.replace("{id}", id))
                 .then(() => {
+
                     modal.hide();
 
-                    if (config.afterDelete) {
-                        config.afterDelete();
-                    }
-
                     UI.toast("Deleted successfully");
+
+                    if (afterDelete) afterDelete();
+                })
+                .catch(() => {
+
+                    UI.toast("Delete failed", "danger");
                 });
-        };
+        });
     }
 
-    return { openModal, bindActions };
+    return { openModal, confirmDelete };
 
 })();
 

@@ -10,21 +10,21 @@ EnterpriseEmployeeManagement.ViewModels.EmployeeListViewModel >
             <tr>
 
                 <th>
-                    <a href="#" onclick="CrudPage.sort('name'); return false;">
+                    <a href="#" data-sort="name">
                         Name
                         <i id="sortIcon-name" class="ms-1"></i>
                     </a>
                 </th>
 
                 <th>
-                    <a href="#" onclick="CrudPage.sort('email'); return false;">
+                    <a href="#" data-sort="email">
                         Email
                         <i id="sortIcon-email" class="ms-1"></i>
                     </a>
                 </th>
 
                 <th>
-                    <a href="#" onclick="CrudPage.sort('department'); return false;">
+                    <a href="#" data-sort="department">
                         Department
                         <i id="sortIcon-department" class="ms-1"></i>
                     </a>
@@ -73,11 +73,11 @@ EnterpriseEmployeeManagement.ViewModels.EmployeeListViewModel >
                     </td>
 
                     <td>
-                        <button class="btn btn-sm btn-outline-warning" data-edit="@item.Id">
+                        <button class="btn btn-sm btn-outline-warning" data-action="edit" data-id="@item.Id">
                             Edit
                         </button>
 
-                        <button class="btn btn-sm btn-outline-danger" data-delete="@item.Id">
+                        <button class="btn btn-sm btn-outline-danger" data-action="delete" data-id="@item.Id">
                             Delete
                         </button>
                         
@@ -87,11 +87,9 @@ EnterpriseEmployeeManagement.ViewModels.EmployeeListViewModel >
             }
 
         </tbody>
-
     </table>
 
 </div>
-
 
 @{
     var totalPages = (int)Math.Ceiling((double)Model.TotalCount / Model.PageSize);
@@ -104,11 +102,9 @@ EnterpriseEmployeeManagement.ViewModels.EmployeeListViewModel >
         @for (int i = 1; i <= totalPages; i++)
         {
             <li class="page-item @(i == Model.PageNumber ? "active" : "")">
-
-                <a href="#" class="page-link" onclick="CrudPage.loadPage(@i); return false;">
+                <a href="#" class="page-link" data-page="@i">
                     @i
                 </a>
-
             </li>
         }
 
