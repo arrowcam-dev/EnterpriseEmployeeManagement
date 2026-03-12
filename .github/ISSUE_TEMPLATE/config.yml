@@ -1,5 +1,10 @@
 blank_issues_enabled: false
+
 contact_links:
-  - name: Documentation
-    url: https://github.com/your-repo/docs
-    about: Check documentation before opening issue
+  - name: Project Documentation
+    url: https://github.com/arrowcam-dev/EnterpriseEmployeeManagement/tree/main/docs
+    about: Please check the documentation before opening an issue.
+
+  - name: Architecture
+    url: https://github.com/arrowcam-dev/EnterpriseEmployeeManagement/blob/main/docs/architecture.md
+    about: Project Architecture
