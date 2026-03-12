@@ -4,12 +4,14 @@ using EnterpriseEmployeeManagement.Data;
 using EnterpriseEmployeeManagement.Extensions;
 using EnterpriseEmployeeManagement.Models;
 using EnterpriseEmployeeManagement.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 
 namespace EnterpriseEmployeeManagement.Controllers
 {
+    [Authorize]
     public class EmployeeController : Controller
     {
         private readonly ApplicationDbContext _context;
