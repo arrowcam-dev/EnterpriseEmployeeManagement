@@ -4,15 +4,16 @@
     transition: opacity 0.2s ease;
 }
 
+
 body {
     overflow-x: hidden;
 }
 
 .sidebar {
-    width: 260px;
-    height: 100vh;
-    position: fixed;
-    transition: all .3s;
+    width: 250px;
+    transition: width 0.3s;
+    overflow-x: hidden;
+    border-right: 1px solid var(--bs-border-color);
 }
 
     .sidebar.collapsed {
@@ -20,28 +21,88 @@ body {
     }
 
     .sidebar .nav-link {
-        color: inherit;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 10px 20px;
+        white-space: nowrap;
+        color: var(--bs-body-color);
     }
 
-        .sidebar .nav-link.active {
-            background: var(--bs-primary);
-            color: white;
-            border-radius: 6px;
+        .sidebar .nav-link i {
+            font-size: 18px;
+            min-width: 24px;
+            text-align: center;
         }
 
-.main {
-    margin-left: 260px;
-    transition: all .3s;
-}
+        /*.sidebar .nav-link.active {
+        background-color: var(--bs-primary);
+        color: white;
+        border-radius: 6px;
+    }*/
 
-    .main.expanded {
-        margin-left: 70px;
+        .sidebar .nav-link:hover {
+            background: rgba(0,0,0,0.05);
+            color: var(--bs-body-color);
+        }
+
+    /* hide text when collapsed */
+
+    .sidebar.collapsed .sidebar-text {
+        display: none;
     }
 
-.sidebar .nav-link:hover {
-    background: rgba(0, 0, 0, 0.05);
+    /* center icons */
+
+    .sidebar.collapsed .nav-link {
+        justify-content: center;
+    }
+
+    /* hide submenu when collapsed */
+
+    .sidebar.collapsed .submenu {
+        display: none;
+    }
+
+.sidebar-header {
+    padding: 5px;
+    font-weight: bold;
 }
 
-.brand {
-    font-weight: 600;
+.main {
+    min-height: 100vh;
+    background: var(--bs-body-bg);
+}
+
+.stat-card .card-body {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.stat-icon {
+    font-size: 32px;
+}
+
+.sidebar-nav .nav-link {
+    padding: 10px 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.submenu .nav-link {
+    font-size: 0.9rem;
+    padding-left: 40px;
+}
+
+    .submenu .nav-link:hover {
+        background: rgba(0,0,0,0.05);
+        border-radius: 6px;
+    }
+
+.sidebar .nav-link.active {
+    background: var(--bs-primary);
+    color: white;
+    border-radius: 6px;
 }
