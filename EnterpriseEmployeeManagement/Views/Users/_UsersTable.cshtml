@@ -1,0 +1,107 @@
+﻿@using EnterpriseEmployeeManagement.ViewModels
+
+@model PagedResult<UserListViewModel>
+
+    <div class="table-responsive">
+    <table class="table table-hover align-middle">
+
+        <thead class="table-light">
+            <tr>
+
+                <th>
+                    <a href="#" data-sort="username">
+                        Username
+                        <i id="sortIcon-name" class="ms-1"></i>
+                    </a>
+                </th>
+
+                <th>
+                    <a href="#" data-sort="email">
+                        Email
+                        <i id="sortIcon-email" class="ms-1"></i>
+                    </a>
+                </th>
+                <th>Roles</th>
+                <th>Status</th>
+                <th>Actions</th>
+
+            </tr>
+        </thead>
+
+        <tbody>
+            @if (!Model.Items.Any())
+            {
+                <tr>
+                    <td colspan="5" class="text-center">No users found</td>
+                </tr>
+            }
+
+            @foreach (var user in Model.Items)
+            {
+                <tr>
+
+                    <td>@user.Username</td>
+
+                    <td>@user.Email</td>
+
+                    <td>
+                        @foreach (var role in user.Roles)
+                        {
+                            <span class="badge bg-secondary">@role.Role</span>
+                        }
+                    </td>
+
+                    <td>
+                        @if (user.IsActive)
+                        {
+                            <span class="badge bg-success">Active</span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-secondary">Inactive</span>
+                        }
+                    </td>
+
+                    <td>
+                        <button class="btn btn-info btn-sm" data-action="details" data-id="@user.Id">
+                            Details
+                        </button>
+
+                        <button class="btn btn-sm btn-warning" data-action="edit" data-id="@user.Id">
+                            Edit
+                        </button>
+
+                        <button class="btn btn-sm btn-danger" data-action="delete" data-id="@user.Id"
+                                data-name="@user.Username">
+                            Delete
+                        </button>
+
+                    </td>
+
+                </tr>
+            }
+
+        </tbody>
+
+    </table>
+    </div>
+@{
+    var totalPages = (int)Math.Ceiling((double)Model.TotalCount / Model.PageSize);
+}
+
+<nav>
+
+    <ul class="pagination justify-content-center">
+
+        @for (int i = 1; i <= totalPages; i++)
+        {
+            <li class="page-item @(i == Model.PageNumber ? "active" : "")">
+                <a href="#" class="page-link" data-page="@i">
+                    @i
+                </a>
+            </li>
+        }
+
+    </ul>
+
+</nav>

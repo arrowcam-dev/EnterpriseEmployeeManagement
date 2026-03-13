@@ -1,0 +1,31 @@
+﻿@model EnterpriseEmployeeManagement.Models.User
+
+<div class="d-none" data-modal-title="Employee Details (@Model.Email)"></div>
+<div class="row">
+
+    <div class="col-md-6">
+        <strong>Username</strong>
+        <p>@Model.Username</p>
+    </div>
+
+    <div class="col-md-6">
+        <strong>Email</strong>
+        <p>@Model.Email</p>
+    </div>
+
+    <div class="col-md-6">
+        <strong>Roles</strong>
+        @{
+            foreach(var role in Model.Roles)
+            {
+                <span class="badge bg-secondary">@role.Role</span>
+            }
+        }
+    </div>
+
+    <div class="col-md-6">
+        <strong>Is Active</strong>
+        <p>@Model.IsActive</p>
+    </div>
+
+</div>
