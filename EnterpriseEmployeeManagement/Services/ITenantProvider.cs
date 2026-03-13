@@ -2,8 +2,7 @@
 {
     public interface ITenantProvider
     {
-        //int GetCompanyId();
-        int CompanyId { get; set; }
+        Guid CompanyId { get; }
         bool DisableTenantFilter { get; set; }
     }
 }

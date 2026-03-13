@@ -2,7 +2,7 @@
 using EnterpriseEmployeeManagement.Models.Common;
 using EnterpriseEmployeeManagement.Services;
 using Microsoft.EntityFrameworkCore;
-using System.Collections.Generic;
+using System.Reflection;
 
 namespace EnterpriseEmployeeManagement.Data
 {
@@ -22,29 +22,20 @@ namespace EnterpriseEmployeeManagement.Data
 
         public DbSet<Department> Departments { get; set; }
         public DbSet<User> Users { get; set; }
-
+        public DbSet<Role> Roles { get; set; }
         public DbSet<UserRole> UserRoles { get; set; }
+        
+        private void SetTenantFilter<TEntity>(ModelBuilder builder)
+            where TEntity : class, ITenantEntity, ISoftDelete
+        {
+            builder.Entity<TEntity>()
+                .HasQueryFilter(x =>
+                !_tenantProvider.DisableTenantFilter ? (x.CompanyId == _tenantProvider.CompanyId && !x.IsDeleted) : !x.IsDeleted);
+        }
 
         override protected void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
-
-            //modelBuilder.Entity<Company>().HasData(
-            //     new Company
-            //     {
-            //         Id = 1,
-            //         Name = "Demo Company",
-            //         CreatedDate = new DateTime(2025, 1, 1)
-            //     }
-            // );
-
-            modelBuilder.Entity<Employee>()
-                .HasQueryFilter(x =>
-                    !_tenantProvider.DisableTenantFilter ? (x.CompanyId == _tenantProvider.CompanyId && !x.IsDeleted) : !x.IsDeleted);
-
-            modelBuilder.Entity<Department>()
-                .HasQueryFilter(x =>
-                    !_tenantProvider.DisableTenantFilter ? (x.CompanyId == _tenantProvider.CompanyId && !x.IsDeleted) : !x.IsDeleted);
 
             modelBuilder.Entity<Employee>()
                 .HasOne(e => e.Department)
@@ -58,9 +49,45 @@ namespace EnterpriseEmployeeManagement.Data
                 .HasForeignKey(r => r.UserId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            modelBuilder.Entity<User>()
-                .HasQueryFilter(x =>
-                    !_tenantProvider.DisableTenantFilter ? (x.CompanyId == _tenantProvider.CompanyId && !x.IsDeleted) : !x.IsDeleted);
+            modelBuilder.Entity<UserRole>()
+                .HasKey(x => new { x.UserId, x.RoleId });
+
+            modelBuilder.Entity<UserRole>()
+                .HasKey(x => new { x.UserId, x.RoleId });
+
+            modelBuilder.Entity<UserRole>()
+                .HasOne(x => x.User)
+                .WithMany(u => u.Roles)
+                .HasForeignKey(x => x.UserId);
+
+            modelBuilder.Entity<UserRole>()
+                .HasOne(x => x.Role)
+                .WithMany(r => r.Users)
+                .HasForeignKey(x => x.RoleId);
+
+            //modelBuilder.Entity<Employee>()
+            //    .HasQueryFilter(x =>
+            //        !_tenantProvider.DisableTenantFilter ? (x.CompanyId == _tenantProvider.CompanyId && !x.IsDeleted) : !x.IsDeleted);
+
+            //modelBuilder.Entity<Department>()
+            //    .HasQueryFilter(x =>
+            //        !_tenantProvider.DisableTenantFilter ? (x.CompanyId == _tenantProvider.CompanyId && !x.IsDeleted) : !x.IsDeleted);
+
+            //modelBuilder.Entity<User>()
+            //    .HasQueryFilter(x =>
+            //        !_tenantProvider.DisableTenantFilter ? (x.CompanyId == _tenantProvider.CompanyId && !x.IsDeleted) : !x.IsDeleted);
+
+            foreach (var entityType in modelBuilder.Model.GetEntityTypes())
+            {
+                if (typeof(ITenantEntity).IsAssignableFrom(entityType.ClrType))
+                {
+                    var method = typeof(ApplicationDbContext)
+                        .GetMethod(nameof(SetTenantFilter), BindingFlags.NonPublic | BindingFlags.Instance)
+                        ?.MakeGenericMethod(entityType.ClrType);
+
+                    method?.Invoke(this, new object[] { modelBuilder });
+                }
+            }
         }
 
         public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)

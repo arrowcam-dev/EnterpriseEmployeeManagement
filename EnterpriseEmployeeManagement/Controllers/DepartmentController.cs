@@ -58,7 +58,7 @@ namespace EnterpriseEmployeeManagement.Controllers
         // POST Edit
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, Department department)
+        public async Task<IActionResult> Edit(Guid id, Department department)
         {
             if (id != department.Id)
                 return NotFound();

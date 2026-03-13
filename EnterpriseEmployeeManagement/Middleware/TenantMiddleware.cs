@@ -18,9 +18,9 @@ namespace EnterpriseEmployeeManagement.Middleware
                 var companyIdClaim = context.User.FindFirst("CompanyId");
 
                 if (companyIdClaim != null &&
-                    int.TryParse(companyIdClaim.Value, out int companyId))
+                    Guid.TryParse(companyIdClaim.Value, out Guid companyId))
                 {
-                    tenantProvider.CompanyId = companyId;
+                    //tenantProvider.CompanyId = companyId;
                 }
             }
 

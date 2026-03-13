@@ -33,7 +33,7 @@ namespace EnterpriseEmployeeManagement.Controllers
 
             var user = await _context.Users
                 .IgnoreQueryFilters()
-                .Include(x => x.Roles)
+                .Include(x => x.Roles).ThenInclude(ur => ur.Role)
                 .FirstOrDefaultAsync(x =>
                     x.Username == model.Username &&
                     !x.IsDeleted &&
@@ -46,15 +46,15 @@ namespace EnterpriseEmployeeManagement.Controllers
             }
 
             var claims = new List<Claim>
-        {
-            new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-            new Claim(ClaimTypes.Name, user.Username),
-            new Claim("CompanyId", user.CompanyId.ToString())
-        };
+            {
+                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+                new Claim(ClaimTypes.Name, user.Username),
+                new Claim("CompanyId", user.CompanyId.ToString())
+            };
 
             foreach (var role in user.Roles)
             {
-                claims.Add(new Claim(ClaimTypes.Role, role.Role));
+                claims.Add(new Claim(ClaimTypes.Role, role.Role.Name));
             }
 
             var identity = new ClaimsIdentity(

@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace EnterpriseEmployeeManagement.Controllers
 {
-    [Authorize(Roles = SystemRoles.Admin)]
+    [Authorize(Roles = DefaultRoles.Admin)]
     public class UsersController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -40,7 +40,7 @@ namespace EnterpriseEmployeeManagement.Controllers
             return View(deletedUsers);
         }
 
-        public async Task<IActionResult> Restore(int id)
+        public async Task<IActionResult> Restore(Guid id)
         {
             var employee = await _context.Employees
                 .IgnoreQueryFilters()
@@ -56,14 +56,14 @@ namespace EnterpriseEmployeeManagement.Controllers
         }
 
         public async Task<PartialViewResult> LoadUsers(
-            string search = "", 
-            string sortColumn = "username", 
+            string search = "",
+            string sortColumn = "username",
             string sortDirection = "asc",
-            int page = 1, 
+            int page = 1,
             int pageSize = 10)
         {
             var query = _context.Users
-                .Include(x => x.Roles)
+                .Include(x => x.Roles).ThenInclude(x => x.Role)
                 .AsQueryable();
 
             if (!string.IsNullOrWhiteSpace(search))
@@ -107,7 +107,7 @@ namespace EnterpriseEmployeeManagement.Controllers
         {
             var vm = new UserEditViewModel
             {
-                AvailableRoles = SystemRoles.All.ToList()
+                AvailableRoles = DefaultRoles.All.ToList()
             };
 
             return PartialView("_CreateModal", vm);
@@ -130,7 +130,7 @@ namespace EnterpriseEmployeeManagement.Controllers
 
             foreach (var role in model.SelectedRoles)
             {
-                user.Roles.Add(new UserRole { Role = role });
+                //user.Roles.Add(new UserRole { Role = role });
             }
 
             _context.Users.Add(user);
@@ -140,7 +140,7 @@ namespace EnterpriseEmployeeManagement.Controllers
             return Ok();
         }
 
-        public async Task<IActionResult> EditModal(int id)
+        public async Task<IActionResult> EditModal(Guid id)
         {
             var user = await _context.Users
                 .Include(x => x.Roles)
@@ -152,8 +152,8 @@ namespace EnterpriseEmployeeManagement.Controllers
                 Username = user.Username,
                 Email = user.Email,
                 IsActive = user.IsActive,
-                AvailableRoles = SystemRoles.All.ToList(),
-                SelectedRoles = user.Roles.Select(x => x.Role).ToList()
+                AvailableRoles = DefaultRoles.All.ToList(),
+                //SelectedRoles = user.Roles.Select(x => x.Role).ToList()
             };
 
             return PartialView("_EditModal", vm);
@@ -177,7 +177,7 @@ namespace EnterpriseEmployeeManagement.Controllers
 
             foreach (var role in model.SelectedRoles)
             {
-                user.Roles.Add(new UserRole { Role = role });
+                //user.Roles.Add(new UserRole { Role = role });
             }
 
             await _context.SaveChangesAsync();
@@ -189,7 +189,7 @@ namespace EnterpriseEmployeeManagement.Controllers
         {
             var user = await _context.Users.FindAsync(id);
 
-            if(user == null) return NotFound();
+            if (user == null) return NotFound();
 
             user.IsDeleted = true;
 
@@ -199,7 +199,7 @@ namespace EnterpriseEmployeeManagement.Controllers
         }
 
         [HttpGet]
-        public async Task<PartialViewResult> DetailsModal(int id)
+        public async Task<PartialViewResult> DetailsModal(Guid id)
         {
             var user = await _context.Users
                 .Include(e => e.Roles)

@@ -3,6 +3,7 @@ using EnterpriseEmployeeManagement.Data;
 using EnterpriseEmployeeManagement.Helpers;
 using EnterpriseEmployeeManagement.Models;
 using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.Design;
 
 namespace EnterpriseEmployeeManagement.Services
 {
@@ -20,6 +21,8 @@ namespace EnterpriseEmployeeManagement.Services
         {
             _tenantProvider.DisableTenantFilter = true;
 
+            await _context.Database.MigrateAsync();
+
             await SeedCompanyAsync();
             await SeedAdminUserAsync();
 
@@ -30,9 +33,11 @@ namespace EnterpriseEmployeeManagement.Services
             if (await _context.Companies.IgnoreQueryFilters().AnyAsync())
                 return;
 
+            var companyId = Guid.NewGuid();
             var company = new Company
             {
-                Name = "Demo Company",
+                Id = companyId,
+                Name = "Default Company",
                 CreatedDate = DateTime.UtcNow
             };
 
@@ -48,21 +53,35 @@ namespace EnterpriseEmployeeManagement.Services
 
             var company = await _context.Companies.IgnoreQueryFilters().FirstAsync();
 
-            var user = new User
+            var companyId = company.Id;
+
+            var adminRole = new Role
             {
-                CompanyId = company.Id,
+                Id = Guid.NewGuid(),
+                Name = "Admin",
+                CompanyId = companyId,
+                Description = "Administrator role with full permissions"
+            };
+
+            var adminUser = new User
+            {
+                Id = Guid.NewGuid(),
+                CompanyId = companyId,
                 Username = "admin",
                 Email = "admin@demo.local",
                 PasswordHash = PasswordHasher.Hash("Admin@123"),
                 IsActive = true
             };
 
-            user.Roles.Add(new UserRole
+            var userRole = new UserRole
             {
-                Role = SystemRoles.Admin
-            });
+                UserId = adminUser.Id,
+                RoleId = adminRole.Id
+            };
 
-            _context.Users.Add(user);
+            _context.Roles.Add(adminRole);
+            _context.Users.Add(adminUser);
+            _context.UserRoles.Add(userRole);
 
             await _context.SaveChangesAsync();
         }

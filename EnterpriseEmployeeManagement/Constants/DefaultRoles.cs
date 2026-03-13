@@ -1,18 +1,18 @@
 ﻿namespace EnterpriseEmployeeManagement.Constants
 {
-    public static class SystemRoles
+    public static class DefaultRoles
     {
         public const string Admin = "Admin";
+        public const string HR = "HR";
         public const string Manager = "Manager";
-        public const string Staff = "Staff";
-        public const string Auditor = "Auditor";
+        public const string Employee = "Employee";
 
         public static readonly string[] All =
         {
             Admin,
+            HR,
             Manager,
-            Staff,
-            Auditor
+            Employee
         };
     }
 }

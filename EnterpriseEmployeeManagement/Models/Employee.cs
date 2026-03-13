@@ -2,13 +2,10 @@
 
 namespace EnterpriseEmployeeManagement.Models
 {
-    public class Employee : ITenantEntity, IAuditableEntity, ISoftDelete
+    public class Employee : BaseEntity
     {
-        public int Id { get; set; }
 
-        public int CompanyId { get; set; }
-
-        public int DepartmentId { get; set; }
+        public Guid DepartmentId { get; set; }
 
         public string FirstName { get; set; } = string.Empty;
 
@@ -22,9 +19,7 @@ namespace EnterpriseEmployeeManagement.Models
 
         public bool IsActive { get; set; }
 
-        public Department? Department { get; set; }
-        public DateTime CreatedDate { get; set; } = DateTime.UtcNow;
-        public DateTime? UpdatedDate { get; set; }
-        public bool IsDeleted { get; set; }
+        public Department Department { get; set; } = null!;
+
     }
 }

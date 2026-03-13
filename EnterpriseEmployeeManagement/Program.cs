@@ -27,18 +27,21 @@ builder.Services
 
 builder.Services.AddAuthorization();
 
+builder.Services.AddHttpContextAccessor();
+
 builder.Services.AddScoped<ITenantProvider, TenantProvider>();
 builder.Services.AddAutoMapper(typeof(MappingProfile));
 
-builder.Services.AddScoped<ISeedService, SeedService>();
+builder.Services.AddScoped<DbInitializer>();
+//builder.Services.AddScoped<ISeedService, SeedService>();
 
 var app = builder.Build();
 
 using (var scope = app.Services.CreateScope())
 {
-    var seedService = scope.ServiceProvider.GetRequiredService<ISeedService>();
+    var initializer = scope.ServiceProvider.GetRequiredService<DbInitializer>();
 
-    await seedService.SeedAsync();
+    await initializer.InitializeAsync();
 }
 
 // Configure the HTTP request pipeline.
@@ -56,7 +59,7 @@ app.UseStaticFiles();
 app.UseRouting();
 
 app.UseAuthentication();
-app.UseMiddleware<TenantMiddleware>();
+//app.UseMiddleware<TenantMiddleware>();
 app.UseAuthorization();
 
 app.MapStaticAssets();

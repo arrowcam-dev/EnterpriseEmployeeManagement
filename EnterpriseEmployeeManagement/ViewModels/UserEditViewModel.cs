@@ -4,7 +4,7 @@ namespace EnterpriseEmployeeManagement.ViewModels
 {
     public class UserEditViewModel
     {
-        public int Id { get; set; }
+        public Guid Id { get; set; }
 
         [Required(ErrorMessage = "Username is required.")]
         public string Username { get; set; } = string.Empty;

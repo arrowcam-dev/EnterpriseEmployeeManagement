@@ -55,7 +55,7 @@ namespace EnterpriseEmployeeManagement.Controllers
         }
 
         // Restore Deleted Employee
-        public async Task<IActionResult> Restore(int id)
+        public async Task<IActionResult> Restore(Guid id)
         {
             var employee = await _context.Employees
                 .IgnoreQueryFilters()
@@ -158,7 +158,7 @@ namespace EnterpriseEmployeeManagement.Controllers
             return Ok();
         }
 
-        public async Task<IActionResult> EditModal(int id)
+        public async Task<IActionResult> EditModal(Guid id)
         {
             var employee = await _context.Employees
                 .IgnoreQueryFilters()
@@ -199,7 +199,7 @@ namespace EnterpriseEmployeeManagement.Controllers
         }
 
         [HttpGet]
-        public async Task<PartialViewResult> DetailsModal(int id)
+        public async Task<PartialViewResult> DetailsModal(Guid id)
         {
             var employee = await _context.Employees
                 .Include(e => e.Department)
