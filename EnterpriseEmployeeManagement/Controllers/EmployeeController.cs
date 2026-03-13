@@ -4,12 +4,14 @@ using EnterpriseEmployeeManagement.Data;
 using EnterpriseEmployeeManagement.Extensions;
 using EnterpriseEmployeeManagement.Models;
 using EnterpriseEmployeeManagement.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 
 namespace EnterpriseEmployeeManagement.Controllers
 {
+    [Authorize]
     public class EmployeeController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -37,96 +39,6 @@ namespace EnterpriseEmployeeManagement.Controllers
             return View(deletedEmployees);
         }
 
-        // Create Employee
-        public IActionResult Create()
-        {
-            var vm = new EmployeeFormViewModel
-            {
-                HireDate = DateTime.Today,
-                IsActive = true,
-                Departments = _context.Departments
-                 .Select(d => new SelectListItem
-                 {
-                     Value = d.Id.ToString(),
-                     Text = d.Name
-                 }).ToList()
-            };
-
-            return View(vm);
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(EmployeeFormViewModel vm)
-        {
-            if (!ModelState.IsValid)
-            {
-                vm.Departments = _context.Departments
-                    .Select(d => new SelectListItem
-                    {
-                        Value = d.Id.ToString(),
-                        Text = d.Name
-                    }).ToList();
-
-                return View(vm);
-            }
-            
-            var employee = _mapper.Map<Employee>(vm);
-
-            _context.Employees.Add(employee);
-
-            await _context.SaveChangesAsync();
-
-            return RedirectToAction(nameof(Index));
-        }
-
-        [HttpGet]
-        public async Task<IActionResult> Edit(int id)
-        {
-            var employee = await _context.Employees.FindAsync(id);
-
-            if (employee == null)
-                return NotFound();
-
-            var vm = _mapper.Map<EmployeeFormViewModel>(employee);
-
-            vm.Departments = _context.Departments
-                    .Select(d => new SelectListItem
-                    {
-                        Value = d.Id.ToString(),
-                        Text = d.Name
-                    }).ToList();
-
-            return View(vm);
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(EmployeeFormViewModel vm)
-        {
-            if (!ModelState.IsValid)
-            {
-                vm.Departments = _context.Departments
-                    .Select(d => new SelectListItem
-                    {
-                        Value = d.Id.ToString(),
-                        Text = d.Name
-                    }).ToList();
-
-                return View(vm);
-            }
-
-            var employee = await _context.Employees.FindAsync(vm.Id);
-
-            if (employee == null)
-                return NotFound();
-
-            _mapper.Map(vm, employee);
-
-            await _context.SaveChangesAsync();
-
-            return RedirectToAction(nameof(Index));
-        }
 
         // Soft Delete
         public async Task<IActionResult> Delete(int id)

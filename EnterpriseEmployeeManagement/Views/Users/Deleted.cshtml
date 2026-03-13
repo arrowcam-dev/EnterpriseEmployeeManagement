@@ -1,33 +1,35 @@
-﻿@model IEnumerable<EnterpriseEmployeeManagement.Models.Employee>
+﻿@model IEnumerable<EnterpriseEmployeeManagement.Models.User>
 
 <div class="card shadow-sm">
-
     <div class="card-header d-flex justify-content-between align-items-center">
 
-        <h5 class="mb-0">Deleted Employees</h5>
+        <h5 class="mb-0">Deleted Users</h5>
 
     </div>
-<div class="card-body">
+    <div class="card-body">
         <table class="table table-bordered">
-
             <thead>
                 <tr>
-                    <th>Name</th>
+                    <th>Username</th>
                     <th>Email</th>
-                    <th>Department</th>
+                    <th>Role</th>
                     <th>Action</th>
                 </tr>
             </thead>
 
             <tbody>
-
                 @foreach (var item in Model)
                 {
                     <tr>
-                        <td>@item.FirstName @item.LastName</td>
+                        <td>@item.Username</td>
                         <td>@item.Email</td>
-                        <td>@item.Department?.Name</td>
+                        <td>
+                            @foreach (var role in item.Roles)
+                            {
+                                <span class="badge bg-secondary">@role.Role</span>
+                            }
 
+                        </td>
                         <td>
                             <a asp-action="Restore" asp-route-id="@item.Id" class="btn btn-success btn-sm">
                                 Restore
@@ -35,14 +37,8 @@
                         </td>
                     </tr>
                 }
-
             </tbody>
-
         </table>
-
         <a asp-action="Index" class="btn btn-secondary">Back</a>
-</div>
-
-    
-
+    </div>
 </div>
