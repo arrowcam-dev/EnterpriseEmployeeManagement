@@ -5,7 +5,7 @@ namespace EnterpriseEmployeeManagement.ViewModels
 {
     public class EmployeeFormViewModel
     {
-        public int Id { get; set; }
+        public Guid Id { get; set; }
 
         [Required]
         public string FirstName { get; set; } = "";
@@ -18,7 +18,7 @@ namespace EnterpriseEmployeeManagement.ViewModels
         public string Email { get; set; } = "";
 
         [Required]
-        public int DepartmentId { get; set; }
+        public Guid DepartmentId { get; set; }
 
         public string Position { get; set; } = "";
 

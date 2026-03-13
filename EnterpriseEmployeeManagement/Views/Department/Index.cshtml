@@ -3,48 +3,64 @@
 @{
     ViewData["Title"] = "Departments";
 }
+<div class="card shadow-sm" id="departmentCard">
+    <div class="card-header d-flex justify-content-between align-items-center">
 
-<div class="container mt-4">
+        <h5 class="mb-0">Departments</h5>
 
-    <div class="d-flex justify-content-between mb-3">
-        <h2>Departments</h2>
+        <div>
 
-        <a asp-action="Create" class="btn btn-primary">
-            Add Department
-        </a>
+            <a asp-action="Create" class="btn btn-primary btn-sm" data-action="create">
+                <i class="bi bi-plus-lg"></i> New Department
+            </a>
+
+            <a asp-action="Deleted" class="btn btn-outline-secondary btn-sm">
+                Deleted
+            </a>
+
+        </div>
+
     </div>
 
-    <table class="table table-bordered table-striped">
+    <div class="card-body">
 
-        <thead>
-            <tr>
-                <th>Name</th>
-                <th>Description</th>
-                <th width="180">Actions</th>
-            </tr>
-        </thead>
+        <div id="departmentsTableLoader" class="d-none text-center mb-2">
+            <div class="spinner-border text-primary"></div>
+        </div>
 
-        <tbody>
-            @foreach (var item in Model)
-            {
-                <tr>
-                    <td>@item.Name</td>
-                    <td>@item.Description</td>
+        <div id="departmentsTable">
+            <table class="table table-bordered table-striped">
 
-                    <td>
-                        <a asp-action="Edit" asp-route-id="@item.Id"
-                           class="btn btn-sm btn-warning">Edit</a>
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Description</th>
+                        <th width="180">Actions</th>
+                    </tr>
+                </thead>
 
-                        <a asp-action="Delete" asp-route-id="@item.Id"
-                           class="btn btn-sm btn-danger"
-                           onclick="return confirm('Delete this department?')">
-                            Delete
-                        </a>
-                    </td>
-                </tr>
-            }
-        </tbody>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>@item.Name</td>
+                            <td>@item.Description</td>
 
-    </table>
+                            <td>
+                                <a asp-action="Edit" asp-route-id="@item.Id"
+                                   class="btn btn-sm btn-warning">Edit</a>
 
+                                <a asp-action="Delete" asp-route-id="@item.Id"
+                                   class="btn btn-sm btn-danger"
+                                   onclick="return confirm('Delete this department?')">
+                                    Delete
+                                </a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+
+            </table>
+        </div>
+    </div>
 </div>
