@@ -13,38 +13,30 @@
 
 </head>
 <body>
-    <div class="wrapper d-flex">
+    <div class="d-flex">
 
-        <!-- Sidebar -->
-        <aside id="sidebar" class="sidebar p-3">
+        <!-- SIDEBAR -->
 
-            <div class="sidebar-header">
-                <i class="bi bi-people"></i>
+        <aside id="sidebar" class="sidebar px-1">
+
+            <div class="sidebar-brand">
+
+                <i class="bi bi-people-fill"></i>
                 <span class="sidebar-text">EEM System</span>
+
             </div>
-            @* Dashboard
-            Employees
-            Departments
-            Attendance
-            Leave Management
-            Payroll
-            Recruitment
-            Performance Review
-            Training
-            Reports
-            User Management
-            System Settings *@
 
             <ul class="nav flex-column sidebar-nav">
                 @if (User.Identity?.IsAuthenticated == true)
                 {
                     <li class="nav-item">
-                        <a class="nav-link @ViewContext.IsActive("Dashboard")" asp-controller="Dashboard" asp-action="Index"
-                           data-bs-toggle="tooltip"
-                           data-bs-placement="right">
+                        <a class="nav-link @ViewContext.IsActive("Dashboard")" asp-controller="Dashboard" asp-action="Index">
+
                             <i class="bi bi-speedometer2"></i>
                             <span class="sidebar-text">Dashboard</span>
+
                         </a>
+
                     </li>
 
                     <li class="nav-item">
@@ -65,56 +57,141 @@
                         </a>
                     </li>
 
-                    <li class="nav-item">
-                        <a class="nav-link">
-                            <i class="bi bi-calendar-check"></i>
-                            <span class="sidebar-text">Attendance</span>
-                        </a>
-                    </li>
-
-                    <li class="nav-item">
-                        <a class="nav-link">
-                            <i class="bi bi-cash-stack"></i>
-                            <span class="sidebar-text">Payroll</span>
-                        </a>
-                    </li>
-
-                    <li class="nav-item">
-                        <a class="nav-link">
-                            <i class="bi bi-bar-chart"></i>
-                            <span class="sidebar-text">Recruitment</span>
-                        </a>
-                    </li>
-
-                    <li class="nav-item">
-                        <a class="nav-link">
-                            <i class="bi bi-gear"></i>
-                            <span class="sidebar-text">Settings</span>
-                        </a>
-                    </li>
-
-                    <li class="nav-item">
-                        <a class="nav-link @ViewContext.IsActive("Users")" asp-controller="Users" asp-action="Index">
+                    <li class="nav-item has-submenu">
+                        <a class="nav-link d-flex align-items-center" data-bs-toggle="collapse" href="#usersMenu" role="button">
                             <i class="bi bi-person-gear"></i>
-                            <span class="sidebar-text">Users</span>
+                            <span class="sidebar-text">User Settings</span>
+                            <i class="bi bi-chevron-down submenu-arrow"></i>
                         </a>
+
+                        <ul class="collapse submenu list-unstyled" id="usersMenu">
+                            <li>
+                                <a class="nav-link @ViewContext.IsActive("Users")" asp-controller="Users" asp-action="Index">
+                                    <i class="bi bi-person-gear"></i>
+                                    <span class="sidebar-text">Manage Users</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a class="nav-link @ViewContext.IsActive("Roles")" asp-controller="Roles" asp-action="Index">
+                                    <i class="bi bi-shield-lock"></i>
+                                    <span class="sidebar-text">Manage Roles</span>
+                                </a>
+                            </li>
+                        </ul>
                     </li>
                 }
+
+
+                <!-- SETTINGS -->
+
+                <li class="nav-item has-submenu d-none">
+
+                    <a class="nav-link d-flex align-items-center" data-bs-toggle="collapse" href="#settingsMenu" role="button">
+
+                        <i class="bi bi-gear"></i>
+                        <span class="sidebar-text">Settings</span>
+
+                        <i class="bi bi-chevron-down submenu-arrow"></i>
+
+                    </a>
+
+                    <ul class="collapse submenu list-unstyled" id="settingsMenu">
+
+                        <li>
+                            <a class="nav-link" asp-controller="Employees" asp-action="Index">
+
+                                <i class="bi bi-gear"></i>
+                                <span class="sidebar-text">Settings 1</span>
+
+                            </a>
+                        </li>
+
+                        <li>
+                            <a class="nav-link" asp-controller="Employees" asp-action="Create">
+                                <i class="bi bi-gear"></i>
+                                <span class="sidebar-text">Settings 2</span>
+
+                            </a>
+                        </li>
+
+                        <li>
+                            <a class="nav-link">
+                                <i class="bi bi-gear"></i>
+                                <span class="sidebar-text">Settings 3</span>
+
+                            </a>
+                        </li>
+
+                    </ul>
+
+                </li>
+
+
+                <!-- ATTENDANCE -->
+
+                <li class="nav-item has-submenu d-none">
+
+                    <a class="nav-link d-flex align-items-center" data-bs-toggle="collapse" href="#attendanceMenu" role="button">
+
+                        <i class="bi bi-calendar-check"></i>
+                        <span class="sidebar-text">Attendance</span>
+
+                        <i class="bi bi-chevron-down submenu-arrow"></i>
+
+                    </a>
+
+                    <ul class="collapse submenu list-unstyled" id="attendanceMenu">
+
+                        <li>
+                            <a class="nav-link">
+                                Daily Attendance
+                            </a>
+                        </li>
+
+                        <li>
+                            <a class="nav-link">
+                                Leave Management
+                            </a>
+                        </li>
+
+                    </ul>
+
+                </li>
+
+
+                <!-- PAYROLL -->
+
+                <li class="nav-item d-none">
+
+                    <a class="nav-link">
+
+                        <i class="bi bi-cash-stack"></i>
+                        <span class="sidebar-text">Payroll</span>
+
+                    </a>
+
+                </li>
 
             </ul>
 
         </aside>
 
-        <!-- Main -->
+
+        <!-- MAIN CONTENT -->
+
         <div class="main flex-grow-1">
 
             <!-- Topbar -->
             <nav class="navbar navbar-expand-lg border-bottom px-3">
 
-                <button id="sidebarToggle" class="btn btn-outline-secondary me-3">
+                <button id="sidebarToggle" class="btn btn-outline-secondary">
+
                     <i class="bi bi-list"></i>
+
                 </button>
-                @ViewBag.Title
+                <span class="ms-3 h4 mb-0">
+                    @ViewBag.Title
+                </span>
 
                 <div class="ms-auto d-flex align-items-center gap-3">
 
@@ -179,15 +256,14 @@
                     </div>
 
                 </div>
-
             </nav>
 
             <!-- Content -->
-            <main class="p-4">
+            <div class="p-4">
 
                 @RenderBody()
 
-            </main>
+            </div>
 
         </div>
 
