@@ -12,11 +12,11 @@ using Microsoft.EntityFrameworkCore;
 namespace EnterpriseEmployeeManagement.Controllers
 {
     [Authorize]
-    public class EmployeeController : Controller
+    public class EmployeesController : Controller
     {
         private readonly ApplicationDbContext _context;
         private readonly IMapper _mapper;
-        public EmployeeController(ApplicationDbContext context, IMapper mapper)
+        public EmployeesController(ApplicationDbContext context, IMapper mapper)
         {
             _context = context;
             _mapper = mapper;
@@ -41,7 +41,7 @@ namespace EnterpriseEmployeeManagement.Controllers
 
 
         // Soft Delete
-        public async Task<IActionResult> Delete(int id)
+        public async Task<IActionResult> Delete(Guid id)
         {
             var employee = await _context.Employees.FindAsync(id);
 

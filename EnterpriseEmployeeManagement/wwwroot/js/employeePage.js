@@ -2,14 +2,14 @@
 
     CrudPage.init({
 
-        pageContainer: "#employeeCard",
+        pageContainer: "#employeePage",
 
-        tableUrl: "/Employee/LoadEmployees",
+        tableUrl: "/Employees/LoadEmployees",
 
-        createUrl: "/Employee/CreateModal",
-        editUrl: "/Employee/EditModal/{id}",
-        detailsUrl: "/Employee/DetailsModal/{id}",
-        deleteUrl: "/Employee/Delete/{id}",
+        createUrl: "/Employees/CreateModal",
+        editUrl: "/Employees/EditModal/{id}",
+        detailsUrl: "/Employees/DetailsModal/{id}",
+        deleteUrl: "/Employees/Delete/{id}",
 
         tableSelector: "#employeeTable",
         loaderSelector: "#employeeTableLoader",
