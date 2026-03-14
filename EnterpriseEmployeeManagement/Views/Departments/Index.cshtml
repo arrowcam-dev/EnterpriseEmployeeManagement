@@ -1,0 +1,68 @@
+﻿@model IEnumerable<EnterpriseEmployeeManagement.Models.Department>
+
+@{
+    ViewData["Title"] = "Departments";
+}
+<div class="card shadow-sm" id="departmentPage">
+    <div class="card-header d-flex justify-content-between align-items-center">
+
+        <h5 class="mb-0">Departments</h5>
+
+        <div>
+
+            <a asp-action="Create" class="btn btn-primary btn-sm" data-action="create">
+                <i class="bi bi-plus-lg"></i> New Department
+            </a>
+
+            <a asp-action="Deleted" class="btn btn-outline-secondary btn-sm">
+                Deleted
+            </a>
+
+        </div>
+
+    </div>
+
+    <div class="card-body">
+
+        <div class="row mb-3">
+
+            <div class="col-md-4">
+                <div class="input-group">
+
+                    <span class="input-group-text">
+                        <i class="bi bi-search"></i>
+                    </span>
+
+                    <input id="searchBox" class="form-control" value="@Context.Request.Query["search"]" placeholder="Search departments..." />
+
+                </div>
+            </div>
+
+            <div class="col-md-2">
+                <select id="pageSize" name="pageSize" class="form-select">
+                    <option value="10">10</option>
+                    <option value="25">25</option>
+                    <option value="50">50</option>
+                </select>
+
+            </div>
+
+            <div class="col-md-2">
+                <button type="button" class="btn btn-outline-secondary" data-action="reset">
+                    Reset
+                </button>
+            </div>
+
+        </div>
+        <div id="departmentTableLoader" class="d-none text-center mb-2">
+            <div class="spinner-border text-primary"></div>
+        </div>
+
+        <div id="departmentTable">
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/js/departmentPage.js" asp-append-version="true"></script>
+}

@@ -91,7 +91,7 @@
             
             ModalForms.confirm({
 
-                title: "Delete Employee",
+                title: "Confirm Delete",
                 message: `Are you sure you want to delete <strong>${rowName || "this record"}</strong>?`,
                 confirmText: "Delete",
                 btnClass: "btn btn-danger",

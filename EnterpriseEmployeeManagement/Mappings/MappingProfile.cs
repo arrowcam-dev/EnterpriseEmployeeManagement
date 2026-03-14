@@ -15,11 +15,15 @@ namespace EnterpriseEmployeeManagement.Mappings
                 .ForMember(dest => dest.FullName, opt => opt.MapFrom(src => src.FirstName + " " + src.LastName))
                 .ForMember(dest => dest.DepartmentName, opt => opt.MapFrom(src => src.Department.Name));
 
-            //CreateMap<User, UserListViewModel>();
             CreateMap<UserRole, UserRoleViewModel>();
 
             CreateMap<User, UserListViewModel>()
                 .ForMember(dest => dest.Roles, opt => opt.MapFrom(src => src.Roles.Select(r => r.Role.Name)));
+
+            CreateMap<Department, DepartmentListViewModel>();
+
+            CreateMap<DepartmentFormViewModel, Department>();
+            CreateMap<Department, DepartmentFormViewModel>();
         }
     }
 }

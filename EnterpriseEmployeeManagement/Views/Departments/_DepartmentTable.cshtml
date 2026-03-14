@@ -1,0 +1,90 @@
+﻿@using EnterpriseEmployeeManagement.ViewModels
+@model PagedResult<DepartmentListViewModel>
+
+<div class="table-responsive">
+
+    <table class="table table-hover align-middle table-bordered">
+
+        <thead>
+
+            <tr>
+
+                <th>
+                    <a href="#" data-sort="name">
+                        Name
+                        <i id="sortIcon-name" class="ms-1"></i>
+                    </a>
+                </th>
+
+                <th>
+                    <a href="#" data-sort="description">
+                        Email
+                        <i id="sortIcon-description" class="ms-1"></i>
+                    </a>
+                </th>
+
+                <th width="200" class="text-center">Actions</th>
+
+            </tr>
+
+        </thead>
+
+        <tbody>
+
+            @if (!Model.Items.Any())
+            {
+                <tr>
+                    <td colspan="3" class="text-center">No departments found</td>
+                </tr>
+            }
+
+            @foreach (var item in Model.Items)
+            {
+                <tr>
+
+                    <td>@item.Name</td>
+
+                    <td>@item.Description</td>
+
+                    <td class="text-center">
+                        <button class="btn btn-info btn-sm" data-action="details" data-id="@item.Id">
+                            Details
+                        </button>
+                        <button class="btn btn-sm btn-outline-warning" data-action="edit" data-id="@item.Id">
+                            Edit
+                        </button>
+
+                        <button class="btn btn-sm btn-outline-danger" data-action="delete" data-id="@item.Id" data-name="@item.Name">
+                            Delete
+                        </button>
+                        
+                    </td>
+
+                </tr>
+            }
+
+        </tbody>
+    </table>
+
+</div>
+
+@{
+    var totalPages = (int)Math.Ceiling((double)Model.TotalCount / Model.PageSize);
+}
+
+<nav>
+
+    <ul class="pagination justify-content-center">
+
+        @for (int i = 1; i <= totalPages; i++)
+        {
+            <li class="page-item @(i == Model.PageNumber ? "active" : "")">
+                <a href="#" class="page-link" data-page="@i">
+                    @i
+                </a>
+            </li>
+        }
+
+    </ul>
+
+</nav>
